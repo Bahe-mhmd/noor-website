@@ -71,7 +71,46 @@ html{overflow-x:hidden;}
 .audience-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:24px 0;}.audience-card{background:var(--bg-el);border:1px solid var(--border-1);border-radius:var(--r-md);padding:24px 20px;text-align:center;transition:all .3s var(--ease);}.audience-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}.audience-card i{font-size:28px;margin-bottom:10px;display:block;}.audience-card h3{font-size:15px;font-weight:600;margin-bottom:5px;}.audience-card p{font-size:12.5px;color:var(--text-2);line-height:1.6;}
 .ab-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0;}.ab-card{background:var(--bg-el);border:1px solid var(--border-1);border-radius:var(--r-md);padding:22px 20px;transition:all .3s var(--ease);}.ab-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}.ab-ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:14px;border:1px solid var(--border-1);}.a1{background:var(--emerald-50);color:var(--emerald-700);}.a2{background:#EEF2FF;color:#4F46E5;}.a3{background:var(--gold-50);color:var(--gold-600);}.a4{background:#FEF2F2;color:#DC2626;}.a5{background:#F0F9FF;color:#0284C7;}.ab-card h3{font-size:15px;font-weight:600;margin-bottom:5px;}.ab-card p{font-size:13px;color:var(--text-2);line-height:1.6;}
 .ft{text-align:center;padding:24px;font-size:12px;color:var(--text-3);border-top:1px solid var(--border-1);display:flex;align-items:center;justify-content:center;gap:6px;}.ft i{font-size:14px;color:var(--emerald-500);}
-@media(max-width:640px){.hero{padding:40px 8px 16px;}.sugs{grid-template-columns:1fr;}.cat-grid{grid-template-columns:repeat(2,1fr);}.pg-hd{padding:44px 18px 28px;}.pg-body{padding:0 14px 36px;}.home{padding:0 12px;}.mission{padding:28px 18px;border-radius:var(--r-lg);}.ab-grid{grid-template-columns:1fr;}.trust{flex-direction:column;text-align:center;}.msg{max-width:94%;}.audience-grid{grid-template-columns:1fr;}.stats-bar{gap:16px;}.src-strip{gap:6px;}.src-grid{grid-template-columns:1fr;}.hero-h1{font-size:24px;}.hero-ar{font-size:22px;}.hero-p{font-size:14px;}.sug{padding:14px;}}
+/* ═══ PRAYER TIMES ═══ */
+.pt-next{background:linear-gradient(135deg,var(--emerald-600),var(--emerald-800));border-radius:var(--r-lg);padding:24px;color:white;margin-bottom:20px;text-align:center;position:relative;overflow:hidden;}
+.pt-next::before{content:'';position:absolute;top:-50%;right:-30%;width:80%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.06),transparent 60%);}
+.pt-next h3{font-size:13px;opacity:.8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;position:relative;}
+.pt-next .pt-name{font-size:28px;font-weight:700;position:relative;}.pt-next .pt-countdown{font-size:16px;opacity:.9;margin-top:4px;font-variant-numeric:tabular-nums;position:relative;}
+.pt-bar{width:100%;height:4px;background:rgba(255,255,255,0.2);border-radius:4px;margin-top:12px;position:relative;overflow:hidden;}.pt-bar-fill{height:100%;background:var(--gold-400);border-radius:4px;transition:width 1s linear;}
+.pt-hijri{text-align:center;font-size:14px;color:var(--text-2);margin-bottom:16px;padding:10px;background:var(--bg-el);border:1px solid var(--border-1);border-radius:var(--r-sm);}.pt-hijri b{color:var(--emerald-600);}
+.pt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:20px;}
+.pt-card{background:var(--bg-el);border:1px solid var(--border-1);border-radius:var(--r-md);padding:16px;text-align:center;transition:all .3s;}
+.pt-card.active{border-color:var(--emerald-500);box-shadow:0 0 0 3px var(--primary-glow);background:var(--emerald-50);}[data-theme="dark"] .pt-card.active{background:rgba(5,150,105,0.08);}
+.pt-card.passed{opacity:.5;}.pt-card .pt-card-name{font-size:12px;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}.pt-card .pt-card-time{font-size:22px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums;}.pt-card .pt-card-icon{font-size:20px;margin-bottom:6px;color:var(--emerald-600);}
+.pt-method select{width:100%;padding:10px 14px;border:1px solid var(--border-1);border-radius:var(--r-sm);background:var(--bg-el);color:var(--text-1);font-family:var(--font);font-size:14px;cursor:pointer;margin-top:16px;}
+.pt-qibla{text-align:center;margin-top:20px;padding:24px;background:var(--bg-el);border:1px solid var(--border-1);border-radius:var(--r-lg);}.pt-qibla h3{font-size:14px;font-weight:600;margin-bottom:12px;}
+.qibla-compass{width:120px;height:120px;border-radius:50%;border:3px solid var(--emerald-500);margin:0 auto;position:relative;display:flex;align-items:center;justify-content:center;}.qibla-arrow{font-size:40px;color:var(--emerald-600);transition:transform .5s var(--ease);}.qibla-label{font-size:12px;color:var(--text-3);margin-top:8px;}
+/* ═══ QURAN READER ═══ */
+.qr-search{margin-bottom:16px;}.qr-search input{width:100%;padding:12px 18px;border:1px solid var(--border-1);border-radius:var(--r-sm);background:var(--bg-el);color:var(--text-1);font-family:var(--font);font-size:14px;}.qr-search input:focus{outline:none;border-color:var(--emerald-500);box-shadow:0 0 0 3px var(--primary-glow);}
+.qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;}.qr-card{background:var(--bg-el);border:1px solid var(--border-1);border-radius:var(--r-md);padding:16px;cursor:pointer;transition:all .3s var(--ease);text-align:center;}.qr-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--emerald-400);}
+.qr-card .qr-num{width:32px;height:32px;border-radius:50%;background:var(--emerald-50);color:var(--emerald-700);font-size:13px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-bottom:8px;}[data-theme="dark"] .qr-card .qr-num{background:rgba(5,150,105,0.1);}
+.qr-card .qr-ar{font-family:var(--font-arabic);font-size:20px;color:var(--text-1);margin-bottom:4px;}.qr-card .qr-en{font-size:12px;color:var(--text-2);font-weight:500;}.qr-card .qr-info{font-size:11px;color:var(--text-3);margin-top:4px;}
+.qr-reading{display:none;}.qr-reading.show{display:block;}.qr-list.hide{display:none;}
+.qr-back{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid var(--border-1);border-radius:var(--r-sm);background:var(--bg-el);color:var(--text-2);cursor:pointer;font-family:var(--font);font-size:13px;margin-bottom:16px;transition:all .2s;}.qr-back:hover{border-color:var(--emerald-500);color:var(--emerald-700);}
+.qr-bismillah{text-align:center;font-family:var(--font-arabic);font-size:28px;color:var(--gold-500);padding:20px 0;margin-bottom:16px;}
+.qr-verse{padding:16px;margin-bottom:8px;background:var(--bg-el);border:1px solid var(--border-1);border-radius:var(--r-md);}
+.qr-verse-ar{font-family:var(--font-arabic);font-size:24px;line-height:2;text-align:right;color:var(--text-1);margin-bottom:8px;direction:rtl;}.qr-verse-en{font-size:14px;color:var(--text-2);line-height:1.7;}.qr-verse-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--emerald-50);color:var(--emerald-700);font-size:11px;font-weight:700;margin-bottom:6px;}[data-theme="dark"] .qr-verse-num{background:rgba(5,150,105,0.1);}
+.qr-loading{text-align:center;padding:40px;color:var(--text-3);}
+/* ═══ DHIKR ═══ */
+.dh-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}.dh-filter{padding:8px 16px;border:1px solid var(--border-1);border-radius:20px;background:var(--bg-el);color:var(--text-2);cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;transition:all .2s;border-style:solid;}.dh-filter:hover,.dh-filter.active{background:var(--emerald-600);color:white;border-color:var(--emerald-600);}
+.dh-grid{display:flex;flex-direction:column;gap:12px;}.dh-card{background:var(--bg-el);border:1px solid var(--border-1);border-radius:var(--r-md);padding:20px;transition:all .3s;}.dh-card:hover{box-shadow:var(--shadow-md);}
+.dh-card .dh-ar{font-family:var(--font-arabic);font-size:22px;line-height:1.8;text-align:center;color:var(--text-1);margin-bottom:10px;direction:rtl;}.dh-card .dh-trans{font-size:13px;color:var(--text-2);font-style:italic;text-align:center;margin-bottom:6px;}.dh-card .dh-mean{font-size:14px;color:var(--text-1);text-align:center;margin-bottom:10px;line-height:1.6;}
+.dh-card .dh-meta{display:flex;justify-content:center;gap:16px;font-size:12px;color:var(--text-3);flex-wrap:wrap;}.dh-card .dh-meta span{display:flex;align-items:center;gap:4px;}.dh-card .dh-meta i{color:var(--emerald-600);}
+/* ═══ CALENDAR ═══ */
+.cal-today{background:linear-gradient(135deg,var(--emerald-700),var(--emerald-900));border-radius:var(--r-xl);padding:36px 24px;color:white;text-align:center;margin-bottom:20px;position:relative;overflow:hidden;}.cal-today::before{content:'';position:absolute;top:-50%;right:-30%;width:80%;height:200%;background:radial-gradient(circle,rgba(245,158,11,0.06),transparent 60%);}
+.cal-today .cal-hijri-day{font-size:48px;font-weight:800;position:relative;}.cal-today .cal-hijri-month{font-family:var(--font-arabic);font-size:24px;margin-top:4px;position:relative;}.cal-today .cal-hijri-year{font-size:16px;opacity:.7;position:relative;}.cal-today .cal-greg{font-size:13px;opacity:.6;margin-top:8px;position:relative;}
+.cal-events{margin-bottom:20px;}.cal-event{background:var(--bg-el);border:1px solid var(--border-1);border-radius:var(--r-md);padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:8px;}.cal-event-ic{width:40px;height:40px;border-radius:10px;background:var(--gold-50);color:var(--gold-600);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}[data-theme="dark"] .cal-event-ic{background:rgba(245,158,11,0.1);}.cal-event h4{font-size:14px;font-weight:600;}.cal-event p{font-size:12px;color:var(--text-3);}
+.cal-months{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:20px;}.cal-month{background:var(--bg-el);border:1px solid var(--border-1);border-radius:var(--r-md);padding:14px;text-align:center;}.cal-month.current{border-color:var(--emerald-500);background:var(--emerald-50);box-shadow:0 0 0 3px var(--primary-glow);}[data-theme="dark"] .cal-month.current{background:rgba(5,150,105,0.08);}.cal-month .cal-m-num{font-size:11px;color:var(--text-3);font-weight:600;}.cal-month .cal-m-ar{font-family:var(--font-arabic);font-size:18px;margin:4px 0;}.cal-month .cal-m-en{font-size:12px;color:var(--text-2);font-weight:500;}
+/* ═══ SIDEBAR PRAYER WIDGET ═══ */
+.sb-prayer{margin:8px 10px;padding:12px 14px;background:linear-gradient(135deg,var(--emerald-50),var(--gold-50));border:1px solid var(--border-1);border-radius:var(--r-sm);cursor:pointer;transition:all .25s;}[data-theme="dark"] .sb-prayer{background:linear-gradient(135deg,rgba(5,150,105,0.08),rgba(245,158,11,0.04));}.sb-prayer:hover{box-shadow:var(--shadow-sm);border-color:var(--emerald-400);}
+.sb-prayer .sb-pr-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);font-weight:600;}.sb-prayer .sb-pr-name{font-size:15px;font-weight:700;color:var(--emerald-700);margin-top:2px;}.sb-prayer .sb-pr-time{font-size:12px;color:var(--text-2);font-variant-numeric:tabular-nums;}.sb-prayer .sb-pr-cd{font-size:11px;color:var(--text-3);margin-top:2px;font-variant-numeric:tabular-nums;}
+
+@media(max-width:640px){.hero{padding:40px 8px 16px;}.sugs{grid-template-columns:1fr;}.cat-grid{grid-template-columns:repeat(2,1fr);}.pg-hd{padding:44px 18px 28px;}.pg-body{padding:0 14px 36px;}.home{padding:0 12px;}.mission{padding:28px 18px;border-radius:var(--r-lg);}.ab-grid{grid-template-columns:1fr;}.trust{flex-direction:column;text-align:center;}.msg{max-width:94%;}.audience-grid{grid-template-columns:1fr;}.stats-bar{gap:16px;}.src-strip{gap:6px;}.src-grid{grid-template-columns:1fr;}.hero-h1{font-size:24px;}.hero-ar{font-size:22px;}.hero-p{font-size:14px;}.sug{padding:14px;}.pt-grid{grid-template-columns:repeat(3,1fr);}.qr-grid{grid-template-columns:repeat(2,1fr);}.cal-months{grid-template-columns:repeat(3,1fr);}}
 </style>
 </head>
 <body>
@@ -88,9 +127,21 @@ html{overflow-x:hidden;}
     <button class="sb-item active" data-pg="home" onclick="goTo('home',this)"><i class="ri-home-5-line"></i><span data-en="Home" data-ar="الرئيسية">Home</span></button>
     <button class="sb-item" data-pg="categories" onclick="goTo('categories',this)"><i class="ri-apps-2-line"></i><span data-en="Categories" data-ar="الأقسام">Categories</span><span class="sb-badge">8</span></button>
     <div class="sb-div"></div>
+    <div class="sb-lbl" data-en="Tools" data-ar="أدوات">Tools</div>
+    <button class="sb-item" data-pg="prayer" onclick="goTo('prayer',this)"><i class="ri-time-line"></i><span data-en="Prayer Times" data-ar="مواقيت الصلاة">Prayer Times</span></button>
+    <button class="sb-item" data-pg="quran" onclick="goTo('quran',this)"><i class="ri-book-open-line"></i><span data-en="Quran Reader" data-ar="القرآن الكريم">Quran Reader</span></button>
+    <button class="sb-item" data-pg="dhikr" onclick="goTo('dhikr',this)"><i class="ri-hand-heart-line"></i><span data-en="Dhikr & Duas" data-ar="الأذكار والأدعية">Dhikr & Duas</span></button>
+    <button class="sb-item" data-pg="calendar" onclick="goTo('calendar',this)"><i class="ri-calendar-line"></i><span data-en="Islamic Calendar" data-ar="التقويم الهجري">Islamic Calendar</span></button>
+    <div class="sb-div"></div>
     <div class="sb-lbl" data-en="Resources" data-ar="الموارد">Resources</div>
     <button class="sb-item" data-pg="sources" onclick="goTo('sources',this)"><i class="ri-book-marked-line"></i><span data-en="Trusted Sources" data-ar="المصادر الموثوقة">Trusted Sources</span></button>
     <button class="sb-item" data-pg="about" onclick="goTo('about',this)"><i class="ri-lightbulb-line"></i><span data-en="About Noor" data-ar="عن نور">About Noor</span></button>
+  </div>
+  <div class="sb-prayer" onclick="goTo('prayer')" id="sbPrayerWidget">
+    <div class="sb-pr-label" data-en="Next Prayer" data-ar="الصلاة القادمة">Next Prayer</div>
+    <div class="sb-pr-name" id="sbPrName">—</div>
+    <div class="sb-pr-time" id="sbPrTime">—</div>
+    <div class="sb-pr-cd" id="sbPrCd"></div>
   </div>
   <div class="sb-ft"><div class="sb-ctrls"><button class="sb-ctrl on" id="bEN" onclick="setLang('en')">EN</button><button class="sb-ctrl" id="bAR" onclick="setLang('ar')">عربي</button><button class="sb-ctrl" onclick="toggleTheme()" id="tBtn"><i class="ri-moon-line"></i></button></div></div>
 </nav>
@@ -183,7 +234,60 @@ html{overflow-x:hidden;}
   <footer class="ft"><i class="ri-heart-fill"></i> Built for the Ummah</footer>
 </div>
 
-</div></div>
+<!-- PRAYER TIMES -->
+<div class="page" id="pg-prayer">
+  <div class="pg-hd"><div class="pg-hd-ic"><i class="ri-time-fill"></i></div><h1 data-en="Prayer Times" data-ar="مواقيت الصلاة">Prayer Times</h1><p data-en="Accurate prayer times based on your location." data-ar="مواقيت صلاة دقيقة بناءً على موقعك.">Accurate prayer times based on your location.</p></div>
+  <div class="pg-body">
+    <div class="pt-next rv" id="ptNext"><h3 data-en="Next Prayer" data-ar="الصلاة القادمة">Next Prayer</h3><div class="pt-name" id="ptNextName">—</div><div class="pt-countdown" id="ptNextCd">--:--:--</div><div class="pt-bar"><div class="pt-bar-fill" id="ptBarFill" style="width:0%"></div></div></div>
+    <div class="pt-hijri rv rv-d1" id="ptHijri"></div>
+    <div class="pt-grid rv rv-d2" id="ptGrid"></div>
+    <div class="pt-qibla rv rv-d3"><h3 data-en="Qibla Direction" data-ar="اتجاه القبلة">Qibla Direction</h3><div class="qibla-compass"><i class="ri-arrow-up-line qibla-arrow" id="qiblaArrow"></i></div><div class="qibla-label" id="qiblaLabel"></div></div>
+    <div class="pt-method rv rv-d4"><select id="ptMethod" onchange="loadPrayerTimes()"><option value="3">Muslim World League</option><option value="2">ISNA (North America)</option><option value="1">University of Islamic Sciences, Karachi</option><option value="4">Umm al-Qura, Makkah</option><option value="5">Egyptian General Authority</option><option value="13">Turkey (Diyanet)</option><option value="12">UOIF (France)</option></select></div>
+  </div>
+  <footer class="ft"><i class="ri-heart-fill"></i> Built for the Ummah</footer>
+</div>
+
+<!-- QURAN READER -->
+<div class="page" id="pg-quran">
+  <div class="pg-hd"><div class="pg-hd-ic"><i class="ri-book-open-fill"></i></div><h1 data-en="Quran Reader" data-ar="القرآن الكريم">Quran Reader</h1><p data-en="Read all 114 Surahs with Arabic text and English translation." data-ar="اقرأ جميع السور الـ 114 بالنص العربي والترجمة الإنجليزية.">Read all 114 Surahs.</p></div>
+  <div class="pg-body">
+    <div class="qr-list" id="qrList">
+      <div class="qr-search rv"><input type="text" id="qrSearch" placeholder="Search surah..." oninput="filterSurahs(this.value)"></div>
+      <div class="qr-grid rv rv-d1" id="qrGrid"><div class="qr-loading"><i class="ri-loader-4-line"></i> Loading surahs...</div></div>
+    </div>
+    <div class="qr-reading" id="qrReading">
+      <button class="qr-back" onclick="closeSurah()"><i class="ri-arrow-left-line"></i> <span data-en="Back to Surahs" data-ar="العودة للسور">Back to Surahs</span></button>
+      <div id="qrContent"><div class="qr-loading"><i class="ri-loader-4-line"></i> Loading...</div></div>
+    </div>
+  </div>
+  <footer class="ft"><i class="ri-heart-fill"></i> Built for the Ummah</footer>
+</div>
+
+<!-- DHIKR & DUAS -->
+<div class="page" id="pg-dhikr">
+  <div class="pg-hd"><div class="pg-hd-ic"><i class="ri-hand-heart-fill"></i></div><h1 data-en="Dhikr & Duas" data-ar="الأذكار والأدعية">Dhikr & Duas</h1><p data-en="Authentic supplications from the Quran and Sunnah." data-ar="أدعية وأذكار صحيحة من القرآن والسنة.">Authentic supplications from the Quran and Sunnah.</p></div>
+  <div class="pg-body">
+    <div class="dh-filters rv" id="dhFilters"></div>
+    <div class="dh-grid rv rv-d1" id="dhGrid"></div>
+  </div>
+  <footer class="ft"><i class="ri-heart-fill"></i> Built for the Ummah</footer>
+</div>
+
+<!-- ISLAMIC CALENDAR -->
+<div class="page" id="pg-calendar">
+  <div class="pg-hd"><div class="pg-hd-ic"><i class="ri-calendar-fill"></i></div><h1 data-en="Islamic Calendar" data-ar="التقويم الهجري">Islamic Calendar</h1><p data-en="Today's Hijri date, upcoming events, and Islamic months." data-ar="تاريخ اليوم الهجري والأحداث القادمة والأشهر الإسلامية.">Hijri date, events, and Islamic months.</p></div>
+  <div class="pg-body">
+    <div class="cal-today rv" id="calToday"><div class="cal-hijri-day" id="calDay">—</div><div class="cal-hijri-month" id="calMonth">—</div><div class="cal-hijri-year" id="calYear">—</div><div class="cal-greg" id="calGreg"></div></div>
+    <div class="section-label rv rv-d1" data-en="Upcoming Events" data-ar="أحداث قادمة">Upcoming Events</div>
+    <div class="cal-events rv rv-d2" id="calEvents"></div>
+    <div class="section-label rv rv-d3" data-en="Islamic Months" data-ar="الأشهر الإسلامية">Islamic Months</div>
+    <div class="cal-months rv rv-d4" id="calMonths"></div>
+  </div>
+  <footer class="ft"><i class="ri-heart-fill"></i> Built for the Ummah</footer>
+</div>
+
+</div><!-- /content -->
+</div><!-- /app -->
 
 <script>
 let lang='en',dark=false,isProcessing=false;
@@ -316,6 +420,274 @@ function addMsg(role,text,srcs){
 }
 function showT(){const a=document.getElementById('chatArea'),d=document.createElement('div');d.className='msg assistant';d.id='typI';d.innerHTML=`<div class="msg-av"><i class="ri-sparkling-2-fill"></i></div><div class="msg-body"><div class="typ"><span></span><span></span><span></span></div></div>`;a.appendChild(d);d.scrollIntoView({behavior:'smooth',block:'end'});}
 function hideT(){const e=document.getElementById('typI');if(e)e.remove();}
+
+// ═══════════════════════════════════════════════════
+// PAGE INIT TRIGGERS
+// ═══════════════════════════════════════════════════
+const origGoTo=goTo;
+goTo=function(pg,btn){
+  origGoTo(pg,btn);
+  if(pg==='prayer'&&!prayerLoaded)initPrayer();
+  if(pg==='quran'&&!quranLoaded)initQuran();
+  if(pg==='dhikr'&&!dhikrLoaded)initDhikr();
+  if(pg==='calendar'&&!calendarLoaded)initCalendar();
+};
+
+// ═══════════════════════════════════════════════════
+// PRAYER TIMES (Aladhan API + GPS)
+// ═══════════════════════════════════════════════════
+let prayerLoaded=false,userLat=null,userLng=null,prayerTimesData=null;
+const PRAYER_NAMES_EN=['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'];
+const PRAYER_NAMES_AR=['الفجر','الشروق','الظهر','العصر','المغرب','العشاء'];
+const PRAYER_ICONS=['ri-sun-foggy-line','ri-sun-line','ri-sun-line','ri-sun-cloudy-line','ri-moon-cloudy-line','ri-moon-line'];
+
+async function initPrayer(){
+  prayerLoaded=true;
+  try{
+    const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{timeout:10000}));
+    userLat=pos.coords.latitude;userLng=pos.coords.longitude;
+  }catch(e){userLat=21.4225;userLng=39.8262;} // Default: Makkah
+  loadPrayerTimes();
+  setInterval(updatePrayerCountdown,1000);
+}
+
+async function loadPrayerTimes(){
+  const method=document.getElementById('ptMethod')?.value||3;
+  try{
+    const today=new Date();
+    const dd=String(today.getDate()).padStart(2,'0'),mm=String(today.getMonth()+1).padStart(2,'0'),yyyy=today.getFullYear();
+    const r=await fetch(`https://api.aladhan.com/v1/timings/${dd}-${mm}-${yyyy}?latitude=${userLat}&longitude=${userLng}&method=${method}`);
+    const d=await r.json();
+    const t=d.data.timings;
+    prayerTimesData={Fajr:t.Fajr,Sunrise:t.Sunrise,Dhuhr:t.Dhuhr,Asr:t.Asr,Maghrib:t.Maghrib,Isha:t.Isha};
+    const hijri=d.data.date.hijri;
+    document.getElementById('ptHijri').innerHTML=`<b>${hijri.day} ${hijri.month.en} ${hijri.year}</b> — ${hijri.month.ar}`;
+    renderPrayerCards();
+    updatePrayerCountdown();
+    // Qibla direction
+    const qiblaAngle=calcQibla(userLat,userLng);
+    document.getElementById('qiblaArrow').style.transform=`rotate(${qiblaAngle}deg)`;
+    document.getElementById('qiblaLabel').textContent=`${Math.round(qiblaAngle)}° from North`;
+  }catch(e){console.error('Prayer API error:',e);}
+}
+
+function calcQibla(lat,lng){
+  const kLat=21.4225*Math.PI/180,kLng=39.8262*Math.PI/180;
+  const uLat=lat*Math.PI/180,uLng=lng*Math.PI/180;
+  const d=kLng-uLng;
+  const x=Math.sin(d);
+  const y=Math.cos(uLat)*Math.tan(kLat)-Math.sin(uLat)*Math.cos(d);
+  let q=Math.atan2(x,y)*180/Math.PI;
+  return(q+360)%360;
+}
+
+function renderPrayerCards(){
+  if(!prayerTimesData)return;
+  const keys=Object.keys(prayerTimesData);
+  const names=lang==='ar'?PRAYER_NAMES_AR:PRAYER_NAMES_EN;
+  const now=new Date();
+  let nextIdx=-1;
+  keys.forEach((k,i)=>{
+    const[h,m]=prayerTimesData[k].split(':').map(Number);
+    const pt=new Date();pt.setHours(h,m,0,0);
+    if(nextIdx===-1&&pt>now)nextIdx=i;
+  });
+  if(nextIdx===-1)nextIdx=0;
+  let html='';
+  keys.forEach((k,i)=>{
+    const cls=i===nextIdx?'active':(i<nextIdx?'passed':'');
+    const[h,m]=prayerTimesData[k].split(':').map(Number);
+    const ampm=h>=12?'PM':'AM';
+    const h12=h%12||12;
+    html+=`<div class="pt-card ${cls}"><div class="pt-card-icon"><i class="${PRAYER_ICONS[i]}"></i></div><div class="pt-card-name">${names[i]}</div><div class="pt-card-time">${h12}:${String(m).padStart(2,'0')} ${ampm}</div></div>`;
+  });
+  document.getElementById('ptGrid').innerHTML=html;
+}
+
+function updatePrayerCountdown(){
+  if(!prayerTimesData)return;
+  const now=new Date();
+  const keys=Object.keys(prayerTimesData);
+  const names=lang==='ar'?PRAYER_NAMES_AR:PRAYER_NAMES_EN;
+  let nextIdx=-1,nextTime=null,prevTime=null;
+  keys.forEach((k,i)=>{
+    const[h,m]=prayerTimesData[k].split(':').map(Number);
+    const pt=new Date();pt.setHours(h,m,0,0);
+    if(nextIdx===-1&&pt>now){nextIdx=i;nextTime=pt;}
+    if(pt<=now)prevTime=pt;
+  });
+  if(nextIdx===-1){nextIdx=0;const[h,m]=prayerTimesData[keys[0]].split(':').map(Number);nextTime=new Date();nextTime.setDate(nextTime.getDate()+1);nextTime.setHours(h,m,0,0);}
+  const diff=nextTime-now;
+  const hrs=Math.floor(diff/3600000),mins=Math.floor((diff%3600000)/60000),secs=Math.floor((diff%60000)/1000);
+  const cdText=`${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  const[h,m]=prayerTimesData[keys[nextIdx]].split(':').map(Number);
+  const ampm=h>=12?'PM':'AM';const h12=h%12||12;
+  document.getElementById('ptNextName').textContent=names[nextIdx];
+  document.getElementById('ptNextCd').textContent=cdText;
+  // Progress bar
+  if(prevTime){const total=nextTime-prevTime;const elapsed=now-prevTime;const pct=Math.min(100,Math.max(0,(elapsed/total)*100));document.getElementById('ptBarFill').style.width=pct+'%';}
+  // Sidebar widget
+  const sbName=document.getElementById('sbPrName'),sbTime=document.getElementById('sbPrTime'),sbCd=document.getElementById('sbPrCd');
+  if(sbName){sbName.textContent=names[nextIdx];sbTime.textContent=`${h12}:${String(m).padStart(2,'0')} ${ampm}`;sbCd.textContent=cdText;}
+  renderPrayerCards();
+}
+
+// ═══════════════════════════════════════════════════
+// QURAN READER (AlQuran.cloud API)
+// ═══════════════════════════════════════════════════
+let quranLoaded=false,surahsList=[];
+
+async function initQuran(){
+  quranLoaded=true;
+  try{
+    const r=await fetch('https://api.alquran.cloud/v1/surah');
+    const d=await r.json();
+    surahsList=d.data;
+    renderSurahs(surahsList);
+  }catch(e){document.getElementById('qrGrid').innerHTML='<p style="color:var(--text-3)">Failed to load. Check your connection.</p>';}
+}
+
+function renderSurahs(list){
+  document.getElementById('qrGrid').innerHTML=list.map(s=>{
+    const type=s.revelationType==='Meccan'?'Meccan':'Medinan';
+    const typeAr=s.revelationType==='Meccan'?'مكية':'مدنية';
+    return`<div class="qr-card" onclick="openSurah(${s.number})"><div class="qr-num">${s.number}</div><div class="qr-ar">${s.name}</div><div class="qr-en">${s.englishName}</div><div class="qr-info">${s.numberOfAyahs} ${lang==='ar'?'آية':'verses'} · ${lang==='ar'?typeAr:type}</div></div>`;
+  }).join('');
+}
+
+function filterSurahs(q){
+  if(!q){renderSurahs(surahsList);return;}
+  const f=surahsList.filter(s=>s.englishName.toLowerCase().includes(q.toLowerCase())||s.name.includes(q)||s.number.toString()===q||s.englishNameTranslation.toLowerCase().includes(q.toLowerCase()));
+  renderSurahs(f);
+}
+
+async function openSurah(num){
+  document.getElementById('qrList').classList.add('hide');
+  const reading=document.getElementById('qrReading');
+  reading.classList.add('show');
+  document.getElementById('qrContent').innerHTML='<div class="qr-loading"><i class="ri-loader-4-line"></i> Loading surah...</div>';
+  try{
+    const[arRes,enRes]=await Promise.all([
+      fetch(`https://api.alquran.cloud/v1/surah/${num}/ar.alafasy`),
+      fetch(`https://api.alquran.cloud/v1/surah/${num}/en.asad`)
+    ]);
+    const ar=await arRes.json(),en=await enRes.json();
+    const arAyahs=ar.data.ayahs,enAyahs=en.data.ayahs;
+    let html=num!==1&&num!==9?'<div class="qr-bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>':'';
+    html+=`<h2 style="text-align:center;margin-bottom:20px;font-family:var(--font-arabic);font-size:28px;color:var(--emerald-700)">${ar.data.name}</h2>`;
+    arAyahs.forEach((a,i)=>{
+      html+=`<div class="qr-verse"><div class="qr-verse-num">${a.numberInSurah}</div><div class="qr-verse-ar">${a.text}</div><div class="qr-verse-en">${enAyahs[i]?.text||''}</div></div>`;
+    });
+    document.getElementById('qrContent').innerHTML=html;
+  }catch(e){document.getElementById('qrContent').innerHTML='<p style="color:var(--text-3)">Failed to load surah. Please try again.</p>';}
+}
+
+function closeSurah(){
+  document.getElementById('qrList').classList.remove('hide');
+  document.getElementById('qrReading').classList.remove('show');
+}
+
+// ═══════════════════════════════════════════════════
+// DHIKR & DUAS (Authentic hardcoded data)
+// ═══════════════════════════════════════════════════
+let dhikrLoaded=false;
+const DHIKR_DATA=[
+  {cat:'morning',ar:'أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ',trans:"Asbahna wa asbahal mulku lillah",mean:"We have reached the morning and at this very time the kingdom belongs to Allah.",src:"Sahih Muslim 2723",count:"1x"},
+  {cat:'morning',ar:'اللَّهُمَّ بِكَ أَصْبَحْنَا وَبِكَ أَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ',trans:"Allahumma bika asbahna wa bika amsayna",mean:"O Allah, by Your leave we have reached the morning, by Your leave we live and die.",src:"Tirmidhi 3391",count:"1x"},
+  {cat:'morning',ar:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ',trans:"Subhan Allahi wa bihamdihi",mean:"Glory and praise be to Allah.",src:"Sahih Muslim 2692",count:"100x"},
+  {cat:'evening',ar:'أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ',trans:"Amsayna wa amsal mulku lillah",mean:"We have reached the evening and the kingdom belongs to Allah.",src:"Sahih Muslim 2723",count:"1x"},
+  {cat:'evening',ar:'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ',trans:"A'udhu bikalimatillahit-tammati min sharri ma khalaq",mean:"I seek refuge in the perfect words of Allah from the evil of what He has created.",src:"Sahih Muslim 2708",count:"3x"},
+  {cat:'afterprayer',ar:'أَسْتَغْفِرُ اللَّهَ',trans:"Astaghfirullah",mean:"I seek forgiveness from Allah.",src:"Sahih Muslim 591",count:"3x"},
+  {cat:'afterprayer',ar:'اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ',trans:"Allahumma antas-salamu wa minkas-salam",mean:"O Allah, You are Peace and from You comes peace. Blessed are You, O Owner of Majesty and Honor.",src:"Sahih Muslim 592",count:"1x"},
+  {cat:'afterprayer',ar:'سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَاللَّهُ أَكْبَرُ',trans:"Subhan Allah, Alhamdulillah, Allahu Akbar",mean:"Glory be to Allah, Praise be to Allah, Allah is the Greatest.",src:"Sahih Muslim 595",count:"33x each"},
+  {cat:'sleep',ar:'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا',trans:"Bismika Allahumma amutu wa ahya",mean:"In Your name, O Allah, I die and I live.",src:"Sahih Bukhari 6324",count:"1x"},
+  {cat:'sleep',ar:'اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ',trans:"Allahumma qini 'adhabaka yawma tab'athu 'ibadak",mean:"O Allah, protect me from Your punishment on the Day You resurrect Your servants.",src:"Abu Dawud 5045",count:"1x"},
+  {cat:'protection',ar:'بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ',trans:"Bismillahil-ladhi la yadurru ma'asmihi shay'un fil-ardi wa la fis-sama'",mean:"In the name of Allah with whose name nothing on earth or heaven can cause harm.",src:"Tirmidhi 3388",count:"3x"},
+  {cat:'protection',ar:'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّةِ مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ',trans:"A'udhu bikalimatillahi at-tammah min kulli shaytanin wa hammah",mean:"I seek refuge in the perfect words of Allah from every devil and harmful creature.",src:"Sahih Bukhari 3371",count:"As needed"},
+  {cat:'general',ar:'لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ',trans:"La ilaha illallahu wahdahu la sharika lah",mean:"There is no god but Allah alone, with no partner.",src:"Sahih Bukhari 6403",count:"100x"},
+  {cat:'general',ar:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ سُبْحَانَ اللَّهِ الْعَظِيمِ',trans:"Subhan Allahi wa bihamdihi, Subhan Allahil-Azim",mean:"Glory and praise be to Allah, Glory be to Allah the Almighty.",src:"Sahih Bukhari 6682",count:"Frequently"},
+  {cat:'general',ar:'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ',trans:"La hawla wa la quwwata illa billah",mean:"There is no power and no strength except with Allah.",src:"Sahih Bukhari 6384",count:"Frequently"}
+];
+const DHIKR_CATS=[
+  {id:'all',en:'All',ar:'الكل'},
+  {id:'morning',en:'Morning',ar:'الصباح'},
+  {id:'evening',en:'Evening',ar:'المساء'},
+  {id:'afterprayer',en:'After Prayer',ar:'بعد الصلاة'},
+  {id:'sleep',en:'Sleep',ar:'النوم'},
+  {id:'protection',en:'Protection',ar:'الحماية'},
+  {id:'general',en:'General',ar:'عام'}
+];
+
+function initDhikr(){
+  dhikrLoaded=true;
+  const filtersEl=document.getElementById('dhFilters');
+  filtersEl.innerHTML=DHIKR_CATS.map(c=>`<button class="dh-filter${c.id==='all'?' active':''}" onclick="filterDhikr('${c.id}',this)" data-en="${c.en}" data-ar="${c.ar}">${lang==='ar'?c.ar:c.en}</button>`).join('');
+  renderDhikr('all');
+}
+
+function filterDhikr(cat,btn){
+  document.querySelectorAll('.dh-filter').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderDhikr(cat);
+}
+
+function renderDhikr(cat){
+  const items=cat==='all'?DHIKR_DATA:DHIKR_DATA.filter(d=>d.cat===cat);
+  document.getElementById('dhGrid').innerHTML=items.map(d=>`<div class="dh-card"><div class="dh-ar">${d.ar}</div><div class="dh-trans">${d.trans}</div><div class="dh-mean">${d.mean}</div><div class="dh-meta"><span><i class="ri-book-open-line"></i>${d.src}</span><span><i class="ri-repeat-line"></i>${d.count}</span></div></div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// ISLAMIC CALENDAR (Aladhan API)
+// ═══════════════════════════════════════════════════
+let calendarLoaded=false;
+const HIJRI_MONTHS=[
+  {num:1,ar:'مُحَرَّم',en:'Muharram',mean:'Sacred'},
+  {num:2,ar:'صَفَر',en:'Safar',mean:'Void'},
+  {num:3,ar:'رَبِيع الأَوَّل',en:'Rabi al-Awwal',mean:'First Spring'},
+  {num:4,ar:'رَبِيع الثَّانِي',en:'Rabi al-Thani',mean:'Second Spring'},
+  {num:5,ar:'جُمَادَى الأُولَى',en:'Jumada al-Ula',mean:'First Dry'},
+  {num:6,ar:'جُمَادَى الثَّانِيَة',en:'Jumada al-Thani',mean:'Second Dry'},
+  {num:7,ar:'رَجَب',en:'Rajab',mean:'Respect'},
+  {num:8,ar:'شَعْبَان',en:'Sha\'ban',mean:'Scattered'},
+  {num:9,ar:'رَمَضَان',en:'Ramadan',mean:'Burning Heat'},
+  {num:10,ar:'شَوَّال',en:'Shawwal',mean:'Raised'},
+  {num:11,ar:'ذُو القَعْدَة',en:'Dhul Qi\'dah',mean:'Sitting'},
+  {num:12,ar:'ذُو الحِجَّة',en:'Dhul Hijjah',mean:'Pilgrimage'}
+];
+const ISLAMIC_EVENTS=[
+  {name_en:'Ramadan',name_ar:'رمضان',month:9,day:1,icon:'ri-moon-line'},
+  {name_en:'Eid al-Fitr',name_ar:'عيد الفطر',month:10,day:1,icon:'ri-gift-line'},
+  {name_en:'Day of Arafah',name_ar:'يوم عرفة',month:12,day:9,icon:'ri-map-pin-line'},
+  {name_en:'Eid al-Adha',name_ar:'عيد الأضحى',month:12,day:10,icon:'ri-gift-line'},
+  {name_en:'Islamic New Year',name_ar:'رأس السنة الهجرية',month:1,day:1,icon:'ri-calendar-line'},
+  {name_en:'Mawlid al-Nabi',name_ar:'المولد النبوي',month:3,day:12,icon:'ri-star-line'},
+  {name_en:'Laylat al-Qadr',name_ar:'ليلة القدر',month:9,day:27,icon:'ri-sparkling-2-line'},
+  {name_en:'Ashura',name_ar:'عاشوراء',month:1,day:10,icon:'ri-drop-line'}
+];
+
+async function initCalendar(){
+  calendarLoaded=true;
+  try{
+    const today=new Date();
+    const dd=String(today.getDate()).padStart(2,'0'),mm=String(today.getMonth()+1).padStart(2,'0'),yyyy=today.getFullYear();
+    const r=await fetch(`https://api.aladhan.com/v1/gpiToH/${dd}-${mm}-${yyyy}`);
+    const d=await r.json();
+    const h=d.data.hijri;
+    document.getElementById('calDay').textContent=h.day;
+    document.getElementById('calMonth').textContent=h.month.ar;
+    document.getElementById('calYear').textContent=h.year+' هـ';
+    document.getElementById('calGreg').textContent=`${today.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}`;
+    // Months grid
+    const currentHMonth=parseInt(h.month.number);
+    document.getElementById('calMonths').innerHTML=HIJRI_MONTHS.map(m=>`<div class="cal-month${m.num===currentHMonth?' current':''}"><div class="cal-m-num">${m.num}</div><div class="cal-m-ar">${m.ar}</div><div class="cal-m-en">${m.en}</div></div>`).join('');
+    // Events
+    document.getElementById('calEvents').innerHTML=ISLAMIC_EVENTS.map(e=>`<div class="cal-event"><div class="cal-event-ic"><i class="${e.icon}"></i></div><div><h4>${lang==='ar'?e.name_ar:e.name_en}</h4><p>${HIJRI_MONTHS[e.month-1]?.en||''} ${e.day}</p></div></div>`).join('');
+  }catch(e){console.error('Calendar API error:',e);}
+}
+
+// ═══ INIT PRAYER WIDGET ON LOAD ═══
+setTimeout(()=>{initPrayer();},3500);
+
 document.addEventListener('DOMContentLoaded',()=>{document.getElementById('pg-home').classList.add('visible');});
 </script>
 </body>
