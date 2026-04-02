@@ -350,7 +350,7 @@ html{overflow-x:hidden;}
       <div class="zk-row"><label><i class="ri-stock-line"></i> <span data-en="Stocks & Investments" data-ar="الأسهم والاستثمارات">Stocks & Investments</span></label><input type="number" id="zkStocks" placeholder="0.00" oninput="calcZakat()"></div>
       <div class="zk-row"><label><i class="ri-building-2-line"></i> <span data-en="Business Assets" data-ar="أصول تجارية">Business Assets</span></label><input type="number" id="zkBusiness" placeholder="0.00" oninput="calcZakat()"></div>
       <div class="zk-row"><label><i class="ri-arrow-down-circle-line"></i> <span data-en="Debts You Owe (deducted)" data-ar="الديون عليك (تُخصم)">Debts You Owe (deducted)</span></label><input type="number" id="zkDebt" placeholder="0.00" oninput="calcZakat()"></div>
-      <div class="zk-row"><label><i class="ri-exchange-dollar-line"></i> <span data-en="Currency" data-ar="العملة">Currency</span></label><select id="zkCurrency" onchange="calcZakat()" style="width:100%;padding:12px;border:1px solid var(--border-1);border-radius:var(--r-sm);background:var(--bg-sunk);color:var(--text-1);font-family:var(--font);font-size:14px;"><option value="$">USD ($)</option><option value="€">EUR (€)</option><option value="£">GBP (£)</option><option value="د.ت">TND (د.ت)</option><option value="﷼">SAR (﷼)</option><option value="د.إ">AED (د.إ)</option></select></div>
+      <div class="zk-row"><label><i class="ri-exchange-dollar-line"></i> <span data-en="Currency" data-ar="العملة">Currency</span></label><select id="zkCurrency" onchange="calcZakat()" style="width:100%;padding:12px;border:1px solid var(--border-1);border-radius:var(--r-sm);background:var(--bg-sunk);color:var(--text-1);font-family:var(--font);font-size:14px;"><option value="$">USD ($)</option><option value="€">EUR (€)</option><option value="£">GBP (£)</option><option value="د.ت">TND (د.ت)</option><option value="﷼">SAR (﷼)</option><option value="د.إ">AED (د.إ)</option><option value="د.ك">KWD (د.ك)</option><option value="ر.ق">QAR (ر.ق)</option><option value="ر.ع">OMR (ر.ع)</option><option value="د.ب">BHD (د.ب)</option><option value="ج.م">EGP (ج.م)</option><option value="د.م">MAD (د.م)</option><option value="د.ج">DZD (د.ج)</option><option value="د.ل">LYD (د.ل)</option><option value="د.ع">IQD (د.ع)</option><option value="ل.ل">LBP (ل.ل)</option><option value="₺">TRY (₺)</option><option value="₨">PKR (₨)</option><option value="₹">INR (₹)</option><option value="৳">BDT (৳)</option><option value="Rp">IDR (Rp)</option><option value="RM">MYR (RM)</option><option value="₦">NGN (₦)</option><option value="R">ZAR (R)</option><option value="C$">CAD (C$)</option><option value="A$">AUD (A$)</option><option value="CHF">CHF</option><option value="kr">SEK (kr)</option><option value="¥">JPY (¥)</option><option value="¥">CNY (¥)</option></select></div>
     </div>
     <div class="zk-info rv rv-d2"><i class="ri-information-line" style="color:var(--gold-500);margin-right:6px;"></i><b data-en="Nisab Threshold:" data-ar="حد النصاب:">Nisab Threshold:</b> <span data-en="The minimum wealth requiring zakat is equivalent to 85g of gold or 595g of silver. If your total zakatable assets exceed this, zakat (2.5%) is due on the full amount." data-ar="الحد الأدنى للثروة التي تجب فيها الزكاة يعادل 85 غرام ذهب أو 595 غرام فضة. إذا تجاوزت أصولك هذا الحد، تجب الزكاة (2.5%) على كامل المبلغ.">The minimum wealth requiring zakat is equivalent to 85g of gold or 595g of silver.</span></div>
   </div>
@@ -555,6 +555,7 @@ goTo=function(pg,btn){
   if(pg==='quran'&&!quranLoaded)initQuran();
   if(pg==='dhikr'&&!dhikrLoaded)initDhikr();
   if(pg==='calendar'&&!calendarLoaded)initCalendar();
+  if(pg==='names'&&!namesLoaded)initNames();
 };
 
 // ═══════════════════════════════════════════════════
@@ -794,19 +795,47 @@ async function initCalendar(){
   try{
     const today=new Date();
     const dd=String(today.getDate()).padStart(2,'0'),mm=String(today.getMonth()+1).padStart(2,'0'),yyyy=today.getFullYear();
-    const r=await fetch(`https://api.aladhan.com/v1/gpiToH/${dd}-${mm}-${yyyy}`);
+    const r=await fetch(`https://api.aladhan.com/v1/gpiToH?date=${dd}-${mm}-${yyyy}`);
     const d=await r.json();
-    const h=d.data.hijri;
-    document.getElementById('calDay').textContent=h.day;
-    document.getElementById('calMonth').textContent=h.month.ar;
-    document.getElementById('calYear').textContent=h.year+' هـ';
-    document.getElementById('calGreg').textContent=`${today.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}`;
-    // Months grid
-    const currentHMonth=parseInt(h.month.number);
+    if(d.code===200 && d.data && d.data.hijri){
+      const h=d.data.hijri;
+      document.getElementById('calDay').textContent=h.day;
+      document.getElementById('calMonth').textContent=h.month.ar||h.month.en;
+      document.getElementById('calYear').textContent=h.year+' هـ';
+    }else{
+      // Fallback: calculate approximate Hijri date
+      const hijriApprox=gregorianToHijri(today);
+      document.getElementById('calDay').textContent=hijriApprox.day;
+      document.getElementById('calMonth').textContent=HIJRI_MONTHS[hijriApprox.month-1]?.ar||'';
+      document.getElementById('calYear').textContent=hijriApprox.year+' هـ';
+    }
+    document.getElementById('calGreg').textContent=today.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    // Get current hijri month for highlighting
+    let currentHMonth=1;
+    try{currentHMonth=parseInt(d.data?.hijri?.month?.number)||1;}catch(e){}
     document.getElementById('calMonths').innerHTML=HIJRI_MONTHS.map(m=>`<div class="cal-month${m.num===currentHMonth?' current':''}"><div class="cal-m-num">${m.num}</div><div class="cal-m-ar">${m.ar}</div><div class="cal-m-en">${m.en}</div></div>`).join('');
-    // Events
     document.getElementById('calEvents').innerHTML=ISLAMIC_EVENTS.map(e=>`<div class="cal-event"><div class="cal-event-ic"><i class="${e.icon}"></i></div><div><h4>${lang==='ar'?e.name_ar:e.name_en}</h4><p>${HIJRI_MONTHS[e.month-1]?.en||''} ${e.day}</p></div></div>`).join('');
-  }catch(e){console.error('Calendar API error:',e);}
+  }catch(e){
+    console.error('Calendar API error:',e);
+    // Fallback even if API totally fails
+    const today=new Date();
+    const hijriApprox=gregorianToHijri(today);
+    document.getElementById('calDay').textContent=hijriApprox.day;
+    document.getElementById('calMonth').textContent=HIJRI_MONTHS[hijriApprox.month-1]?.ar||'';
+    document.getElementById('calYear').textContent=hijriApprox.year+' هـ';
+    document.getElementById('calGreg').textContent=today.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    document.getElementById('calMonths').innerHTML=HIJRI_MONTHS.map(m=>`<div class="cal-month"><div class="cal-m-num">${m.num}</div><div class="cal-m-ar">${m.ar}</div><div class="cal-m-en">${m.en}</div></div>`).join('');
+    document.getElementById('calEvents').innerHTML=ISLAMIC_EVENTS.map(e=>`<div class="cal-event"><div class="cal-event-ic"><i class="${e.icon}"></i></div><div><h4>${lang==='ar'?e.name_ar:e.name_en}</h4><p>${HIJRI_MONTHS[e.month-1]?.en||''} ${e.day}</p></div></div>`).join('');
+  }
+}
+// Approximate Hijri date calculation (fallback)
+function gregorianToHijri(gd){
+  const jd=Math.floor((1461*(gd.getFullYear()+4800+Math.floor((gd.getMonth()-13)/12)))/4)+Math.floor((367*(gd.getMonth()-1-12*Math.floor((gd.getMonth()-13)/12)))/12)-Math.floor((3*Math.floor((gd.getFullYear()+4900+Math.floor((gd.getMonth()-13)/12))/100))/4)+gd.getDate()-32075;
+  const l=jd-1948440+10632;const n=Math.floor((l-1)/10631);const ll=l-10631*n+354;
+  const j=Math.floor((10985-ll)/5316)*Math.floor((50*ll)/17719)+Math.floor(ll/5670)*Math.floor((43*ll)/15238);
+  const lo=ll-Math.floor((30-j)/15)*Math.floor((17719*j)/50)-Math.floor(j/16)*Math.floor((15238*j)/43)+29;
+  const m=Math.floor((24*lo)/709);const d=lo-Math.floor((709*m)/24);const y=30*n+j-30;
+  return{day:d,month:m,year:y};
 }
 
 // ═══════════════════════════════════════════════════
@@ -935,33 +964,50 @@ function checkHalal(){
   const el=document.getElementById('hlResult');
   const statusEl=document.getElementById('hlStatus');
   const reasonEl=document.getElementById('hlReason');
-  const match=HALAL_DB[input]||HALAL_DB[input.replace(/\s+/g,'-')]||HALAL_DB[input.replace(/^e/,'e')];
-  el.className='hl-result show';
+  // Check local database first
+  const match=HALAL_DB[input]||HALAL_DB[input.replace(/\s+/g,'-')]||HALAL_DB[input.replace(/^e\s*/i,'e')];
   if(match){
-    const labels={halal:{en:'✅ Halal',ar:'✅ حلال',cls:'halal-s'},haram:{en:'❌ Haram',ar:'❌ حرام',cls:'haram-s'},doubtful:{en:'⚠️ Doubtful (Mashbooh)',ar:'⚠️ مشتبه',cls:'doubtful-s'}};
-    const lb=labels[match.s];
-    el.className=`hl-result show ${match.s}`;
-    statusEl.className=`hl-status ${lb.cls}`;
-    statusEl.innerHTML=`${lang==='ar'?lb.ar:lb.en} — ${match.n}`;
-    reasonEl.textContent=match.r;
+    showHalalResult(match.s,match.n,match.r);
   }else{
+    // Use AI for unknown ingredients
+    statusEl.innerHTML='<i class="ri-loader-4-line" style="animation:lSpin 1s linear infinite"></i> Checking...';
+    reasonEl.textContent='';
     el.className='hl-result show doubtful';
-    statusEl.className='hl-status doubtful-s';
-    statusEl.innerHTML=lang==='ar'?'🔍 غير موجود في قاعدة البيانات':'🔍 Not found in database';
-    reasonEl.textContent=lang==='ar'?`"${input}" غير موجود في قاعدة بياناتنا. ننصح بالتحقق من الشركة المصنعة أو استشارة عالم. والله أعلم`:`"${input}" was not found in our database. We recommend checking with the manufacturer or consulting a scholar. And Allah knows best.`;
+    fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:`Is "${input}" halal, haram, or doubtful (mashbooh) in Islam? Answer in this exact format:
+STATUS: [halal/haram/doubtful]
+NAME: [ingredient name]
+REASON: [brief explanation with Islamic ruling, 2-3 sentences max]`})})
+    .then(r=>r.json()).then(data=>{
+      if(data.response){
+        const txt=data.response;
+        const statusMatch=txt.match(/STATUS:\s*(halal|haram|doubtful)/i);
+        const nameMatch=txt.match(/NAME:\s*(.+)/i);
+        const reasonMatch=txt.match(/REASON:\s*([\s\S]+?)(?:SOURCES:|$)/i);
+        const s=statusMatch?statusMatch[1].toLowerCase():'doubtful';
+        const n=nameMatch?nameMatch[1].trim():input;
+        const r=reasonMatch?reasonMatch[1].trim():'Could not determine. Please consult a scholar.';
+        showHalalResult(s,n,r);
+      }else{
+        showHalalResult('doubtful',input,'Could not check this ingredient. Please consult a scholar or manufacturer. والله أعلم');
+      }
+    }).catch(()=>{
+      showHalalResult('doubtful',input,'Connection error. Please try again.');
+    });
   }
+}
+function showHalalResult(status,name,reason){
+  const el=document.getElementById('hlResult'),statusEl=document.getElementById('hlStatus'),reasonEl=document.getElementById('hlReason');
+  const labels={halal:{en:'✅ Halal',ar:'✅ حلال',cls:'halal-s'},haram:{en:'❌ Haram',ar:'❌ حرام',cls:'haram-s'},doubtful:{en:'⚠️ Doubtful (Mashbooh)',ar:'⚠️ مشتبه',cls:'doubtful-s'}};
+  const lb=labels[status]||labels.doubtful;
+  el.className=`hl-result show ${status}`;
+  statusEl.className=`hl-status ${lb.cls}`;
+  statusEl.innerHTML=`${lang==='ar'?lb.ar:lb.en} — ${name}`;
+  reasonEl.textContent=reason;
 }
 function quickCheck(item){
   document.getElementById('hlInput').value=item;
   checkHalal();
 }
-
-// ═══ ADD PAGE INIT TRIGGERS ═══
-const _origGoTo2=goTo;
-goTo=function(pg,btn){
-  _origGoTo2(pg,btn);
-  if(pg==='names'&&!namesLoaded)initNames();
-};
 
 // ═══ INIT PRAYER WIDGET ON LOAD ═══
 setTimeout(()=>{initPrayer();},3500);
