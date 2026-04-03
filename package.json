@@ -1,0 +1,14 @@
+{
+  "name": "noor-islamic-knowledge",
+  "version": "2.0.0",
+  "description": "Noor — Islamic Knowledge Assistant (Multi-page restructured)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
