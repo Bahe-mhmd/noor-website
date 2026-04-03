@@ -1,0 +1,300 @@
+/* ═══════════════════════════════════════════════════
+   NOOR — Base CSS: Variables, Reset, Loader, Animations
+   ═══════════════════════════════════════════════════ */
+
+/* ── Custom Fonts ── */
+@font-face{font-family:'Al Mushaf';src:url('../fonts/Al_Mushaf_Quran.ttf') format('truetype');font-weight:100 900;font-style:normal;font-display:swap;}
+@font-face{font-family:'Harmattan';src:url('../fonts/Harmattan-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:'Harmattan';src:url('../fonts/Harmattan-Medium.ttf') format('truetype');font-weight:500;font-style:normal;font-display:swap;}
+@font-face{font-family:'Harmattan';src:url('../fonts/Harmattan-SemiBold.ttf') format('truetype');font-weight:600;font-style:normal;font-display:swap;}
+@font-face{font-family:'Harmattan';src:url('../fonts/Harmattan-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap;}
+
+/* ── Design Tokens ── */
+:root {
+  /* Colors */
+  --emerald-50: #ECFDF5;
+  --emerald-100: #D1FAE5;
+  --emerald-200: #A7F3D0;
+  --emerald-400: #34D399;
+  --emerald-500: #10B981;
+  --emerald-600: #059669;
+  --emerald-700: #047857;
+  --emerald-800: #065F46;
+  --emerald-900: #064E3B;
+  --gold-50: #FFFBEB;
+  --gold-100: #FEF3C7;
+  --gold-300: #FCD34D;
+  --gold-400: #FBBF24;
+  --gold-500: #F59E0B;
+  --gold-600: #D97706;
+
+  /* Surfaces */
+  --bg: #F6F4EC;
+  --bg-el: #FFFFFF;
+  --bg-sunk: #F0EFE8;
+  --bg-sb: rgba(255,255,255,0.92);
+  --text-1: #1A1A14;
+  --text-2: #4A4A3E;
+  --text-3: #8A8A78;
+  --text-inv: #FFF;
+  --border-1: rgba(0,0,0,0.06);
+  --border-2: rgba(0,0,0,0.1);
+
+  /* Brand */
+  --primary: var(--emerald-700);
+  --primary-glow: rgba(5,150,105,0.12);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,0.08);
+  --shadow-xl: 0 24px 64px rgba(0,0,0,0.12);
+
+  /* Radii */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+
+  /* Layout */
+  --sb-w: 280px;
+
+  /* Easing */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Typography */
+  --font: 'Outfit', sans-serif;
+  --font-ar: 'Harmattan', 'IBM Plex Sans Arabic', sans-serif;
+  --font-arabic: 'Al Mushaf', 'Noto Naskh Arabic', 'Amiri', serif;
+}
+
+/* ── Dark Mode ── */
+[data-theme="dark"] {
+  --bg: #0A0D0B;
+  --bg-el: #141A16;
+  --bg-sunk: #0E1310;
+  --bg-sb: rgba(20,26,22,0.95);
+  --text-1: #E8E6DF;
+  --text-2: #A8A69E;
+  --text-3: #686860;
+  --border-1: rgba(255,255,255,0.06);
+  --border-2: rgba(255,255,255,0.1);
+  --primary-glow: rgba(5,150,105,0.08);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.25);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,0.35);
+  --shadow-xl: 0 24px 64px rgba(0,0,0,0.5);
+  --emerald-50: #071F17;
+  --gold-50: #1A1708;
+}
+
+/* ── Arabic Language Overrides ── */
+[lang="ar"] { --font: var(--font-ar); }
+[lang="ar"] body { font-size: 16px; }
+[lang="ar"] .sb-item { font-size: 15px; }
+[lang="ar"] .sb-tag { font-size: 12px; }
+[lang="ar"] .sb-lbl { font-size: 11px; }
+[lang="ar"] .sug-t { font-size: 15px; }
+[lang="ar"] .sug-d { font-size: 14px; }
+[lang="ar"] .msg-body { font-size: 15.5px; }
+[lang="ar"] .opinion { font-size: 14.5px; }
+[lang="ar"] .opinion-scholar { font-size: 13.5px; }
+[lang="ar"] .src-t { font-size: 13px; }
+[lang="ar"] .cat-nm { font-size: 15.5px; }
+[lang="ar"] .cat-sub { font-size: 13px; }
+[lang="ar"] .inp-bar input { font-size: 16px; }
+[lang="ar"] .hero-p { font-size: 16.5px; }
+[lang="ar"] .pg-hd p { font-size: 16px; }
+[lang="ar"] .src-card h3 { font-size: 16px; }
+[lang="ar"] .src-card p { font-size: 14px; }
+[lang="ar"] .ab-card h3 { font-size: 16px; }
+[lang="ar"] .ab-card p { font-size: 14px; }
+[lang="ar"] .trust h3 { font-size: 15.5px; }
+[lang="ar"] .trust p { font-size: 14px; }
+[lang="ar"] .research-note { font-size: 13.5px; }
+
+/* ── Reset ── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-1);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background .5s var(--ease), color .5s var(--ease);
+  max-width: 100vw;
+}
+html { overflow-x: hidden; }
+::selection { background: var(--emerald-200); color: var(--emerald-900); }
+a { text-decoration: none; color: inherit; }
+.hidden { display: none !important; }
+
+/* ── Islamic Background Pattern ── */
+.islamic-pattern {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.025;
+}
+.islamic-pattern svg { width: 100%; height: 100%; }
+[data-theme="dark"] .islamic-pattern { opacity: 0.015; }
+
+/* ── Loader ── */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: linear-gradient(160deg, var(--emerald-900), #042f22);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity .8s var(--ease), visibility .8s;
+}
+.loader.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.loader-geo {
+  width: 110px;
+  height: 110px;
+  position: relative;
+  margin-bottom: 40px;
+}
+.loader-ring {
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid rgba(245,158,11,0.2);
+  border-radius: 50%;
+  animation: lSpin 8s linear infinite;
+}
+.loader-ring::before, .loader-ring::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold-400);
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.loader-ring::after { top: auto; bottom: -4px; }
+.loader-ring:nth-child(2) {
+  inset: 18px;
+  animation-duration: 5s;
+  animation-direction: reverse;
+  border-color: rgba(255,255,255,0.12);
+}
+.loader-ring:nth-child(2)::before,
+.loader-ring:nth-child(2)::after {
+  background: rgba(255,255,255,0.4);
+  width: 6px; height: 6px; top: -3px;
+}
+.loader-ring:nth-child(2)::after { top: auto; bottom: -3px; }
+.loader-ring:nth-child(3) {
+  inset: 36px;
+  animation-duration: 3s;
+  border-color: var(--gold-400);
+  border-style: dashed;
+}
+.loader-ring:nth-child(3)::before,
+.loader-ring:nth-child(3)::after { display: none; }
+.loader-ctr {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  font-size: 24px;
+  color: var(--gold-400);
+  animation: lPulse 2s ease-in-out infinite;
+}
+.loader-brand { font-family: var(--font-arabic); font-size: 32px; color: var(--gold-400); margin-bottom: 6px; }
+.loader-tag { font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: .3em; text-transform: uppercase; font-weight: 500; }
+.loader-bar { width: 160px; height: 2px; background: rgba(255,255,255,0.08); border-radius: 2px; margin-top: 36px; overflow: hidden; }
+.loader-bar-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--gold-400), var(--gold-300)); border-radius: 2px; animation: lFill 2.6s ease-in-out forwards; }
+
+/* ── Particles ── */
+.particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.particle { position: absolute; border-radius: 50%; animation: pFloat linear infinite; }
+
+/* ── Reveal on scroll ── */
+.rv { opacity: 0; transform: translateY(28px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.rv.show { opacity: 1; transform: translateY(0); }
+.rv-d1 { transition-delay: .08s; }
+.rv-d2 { transition-delay: .16s; }
+.rv-d3 { transition-delay: .24s; }
+.rv-d4 { transition-delay: .32s; }
+.rv-d5 { transition-delay: .40s; }
+.rv-d6 { transition-delay: .48s; }
+.rv-d7 { transition-delay: .56s; }
+
+/* ── Keyframe Animations ── */
+@keyframes lSpin { to { transform: rotate(360deg); } }
+@keyframes lPulse {
+  0%, 100% { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+  50% { opacity: .7; transform: translate(-50%,-50%) scale(1.1); }
+}
+@keyframes lFill {
+  0% { width: 0; }
+  30% { width: 45%; }
+  70% { width: 78%; }
+  100% { width: 100%; }
+}
+@keyframes pFloat {
+  0% { transform: translateY(110vh) scale(0); opacity: 0; }
+  5% { opacity: 1; transform: translateY(105vh) scale(1); }
+  95% { opacity: 1; }
+  100% { transform: translateY(-10vh) scale(0); opacity: 0; }
+}
+@keyframes mIn {
+  from { opacity: 0; transform: translateY(12px) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes hIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes tBnc {
+  0%, 80%, 100% { transform: scale(.8); opacity: .35; }
+  40% { transform: scale(1.15); opacity: 1; }
+}
+@keyframes logoGlow {
+  0% { box-shadow: 0 4px 16px rgba(5,150,105,0.25), 0 0 20px rgba(5,150,105,0.15); }
+  100% { box-shadow: 0 4px 20px rgba(5,150,105,0.4), 0 0 30px rgba(5,150,105,0.25); }
+}
+@keyframes bump { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+/* ── Section Label ── */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--text-3);
+  margin: 28px 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border-1); }
+
+/* ── Footer ── */
+.ft {
+  text-align: center;
+  padding: 24px;
+  font-size: 12px;
+  color: var(--text-3);
+  border-top: 1px solid var(--border-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.ft i { font-size: 14px; color: var(--emerald-500); }

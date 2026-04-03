@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="./favicon.png">
+<title>Noor — Islamic Knowledge Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="./css/base.css">
+<link rel="stylesheet" href="./css/layout.css">
+<link rel="stylesheet" href="./css/components.css">
+<link rel="stylesheet" href="./css/pages.css">
+<link rel="stylesheet" href="./css/new-features.css">
+</head>
+<body>
+<div class="islamic-pattern"><svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="ip" x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M24 0L48 24L24 48L0 24Z" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.4"/><circle cx="24" cy="24" r="4" fill="none" stroke="currentColor" stroke-width="0.3" opacity="0.3"/></pattern></defs><rect width="100%" height="100%" fill="url(#ip)" color="var(--emerald-700)"/></svg></div>
+<div class="loader" id="loader"><div class="loader-geo"><div class="loader-ring"></div><div class="loader-ring"></div><div class="loader-ring"></div><div class="loader-ctr">&#9770;</div></div><div class="loader-brand">&#1576;&#1616;&#1587;&#1618;&#1605;&#1616; &#1649;&#1604;&#1604;&#1614;&#1617;&#1607;&#1616;</div><div class="loader-tag">N O O R &nbsp;&middot;&nbsp; I S L A M I C &nbsp; K N O W L E D G E</div><div class="loader-bar"><div class="loader-bar-fill"></div></div></div>
+<div class="particles" id="particles"></div>
+<button class="mob-btn" onclick="toggleSB()"><i class="ri-menu-3-line"></i></button>
+<div class="app" id="app">
+<nav class="sidebar" id="sidebar">
+  <div class="sb-hd"><div class="sb-brand"><div class="sb-logo"><img src="./logo.png" alt="Noor"></div><div><div class="sb-name">Noor</div><div class="sb-tag">Knowledge Assistant</div></div></div><button class="sb-close" onclick="toggleSB()"><i class="ri-close-line"></i></button></div>
+  <div class="sb-arabesque"><svg viewBox="0 0 200 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 6h30l5-5 5 5h120l5 5 5-5h30" stroke="var(--gold-400)" stroke-width="0.8"/><circle cx="40" cy="6" r="2" fill="var(--gold-400)"/><circle cx="160" cy="6" r="2" fill="var(--gold-400)"/><circle cx="100" cy="6" r="3" fill="var(--gold-400)"/></svg></div>
+  <div class="sb-nav">
+    <div class="sb-lbl">Main</div>
+    <button class="sb-item active" data-pg="home" onclick="goTo('home',this)"><i class="ri-home-5-line"></i><span>Home</span></button>
+    <button class="sb-item" data-pg="categories" onclick="goTo('categories',this)"><i class="ri-apps-2-line"></i><span>Categories</span><span class="sb-badge">8</span></button>
+    <div class="sb-div"></div>
+    <div class="sb-lbl">Tools</div>
+    <button class="sb-item" data-pg="prayer" onclick="goTo('prayer',this)"><i class="ri-time-line"></i><span>Prayer Times</span></button>
+    <button class="sb-item" data-pg="quran" onclick="goTo('quran',this)"><i class="ri-book-open-line"></i><span>Quran Reader</span></button>
+    <button class="sb-item" data-pg="dhikr" onclick="goTo('dhikr',this)"><i class="ri-hand-heart-line"></i><span>Dhikr &amp; Duas</span></button>
+    <button class="sb-item" data-pg="calendar" onclick="goTo('calendar',this)"><i class="ri-calendar-line"></i><span>Islamic Calendar</span></button>
+    <button class="sb-item" data-pg="zakat" onclick="goTo('zakat',this)"><i class="ri-money-dollar-circle-line"></i><span>Zakat Calculator</span></button>
+    <button class="sb-item" data-pg="tasbih" onclick="goTo('tasbih',this)"><i class="ri-refresh-line"></i><span>Tasbih Counter</span></button>
+    <button class="sb-item" data-pg="names" onclick="goTo('names',this)"><i class="ri-star-line"></i><span>99 Names</span></button>
+    <button class="sb-item" data-pg="halal" onclick="goTo('halal',this)"><i class="ri-restaurant-line"></i><span>Halal Checker</span></button>
+    <div class="sb-div"></div>
+    <div class="sb-lbl">New ✨</div>
+    <button class="sb-item" data-pg="ramadan" onclick="goTo('ramadan',this)"><i class="ri-moon-line"></i><span>Ramadan Tracker</span><span class="sb-badge" style="background:var(--gold-100);color:var(--gold-600)">New</span></button>
+    <button class="sb-item" data-pg="daily" onclick="goTo('daily',this)"><i class="ri-sparkling-2-line"></i><span>Verse of the Day</span><span class="sb-badge" style="background:var(--gold-100);color:var(--gold-600)">New</span></button>
+    <button class="sb-item" data-pg="duagen" onclick="goTo('duagen',this)"><i class="ri-sparkling-line"></i><span>AI Dua Generator</span><span class="sb-badge" style="background:var(--gold-100);color:var(--gold-600)">New</span></button>
+    <button class="sb-item" data-pg="mirath" onclick="goTo('mirath',this)"><i class="ri-scales-3-line"></i><span>Inheritance (Mirath)</span><span class="sb-badge" style="background:var(--gold-100);color:var(--gold-600)">New</span></button>
+    <div class="sb-div"></div>
+    <div class="sb-lbl">Resources</div>
+    <button class="sb-item" data-pg="sources" onclick="goTo('sources',this)"><i class="ri-book-marked-line"></i><span>Trusted Sources</span></button>
+    <button class="sb-item" data-pg="about" onclick="goTo('about',this)"><i class="ri-lightbulb-line"></i><span>About Noor</span></button>
+  </div>
+  <div class="sb-prayer" onclick="goTo('prayer')" id="sbPrayerWidget" style="display:none"><div class="sb-pr-label">Next Prayer</div><div class="sb-pr-name" id="sbPrName">—</div><div class="sb-pr-time" id="sbPrTime">—</div><div class="sb-pr-cd" id="sbPrCd"></div></div>
+  <div class="sb-ft">
+    <div class="lang-grid" id="sbLangGrid"></div>
+    <div style="padding:8px 10px 0"><button class="sb-ctrl" style="width:100%" onclick="toggleTheme()" id="tBtn"><i class="ri-moon-line"></i> Theme</button></div>
+  </div>
+</nav>
+<div class="content" id="mainContent">
+  <div class="sb-ov" id="sbOv" onclick="toggleSB()"></div>
+  <div id="pageContainer"></div>
+</div>
+</div>
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>
