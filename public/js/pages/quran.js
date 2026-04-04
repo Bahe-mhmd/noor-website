@@ -1,315 +1,589 @@
 // ═══════════════════════════════════════════════════
-// NOOR — pages/quran.js  (fixed scroll + added tafsir)
+// NOOR — pages/quran.js  ·  Redesigned Quran Reader
+// Inspired by quran.com  ·  Noor theme
 // ═══════════════════════════════════════════════════
 
-let surahsList = [];
-let _lang = 'en';
+// ── Module State ──
+let _surahs      = [];
+let _arAyahs     = [];
+let _transAyahs  = [];
+let _currentNum  = null;
+let _currentData = null;
+let _mode        = 'verse';   // 'verse' | 'reading'
+let _trans       = null;      // { id, name }
+let _tafsirIdx   = 0;
+let _tafsirEd    = 'ar.muyassar';
+let _tafsirCache = {};        // 'edition:S:A' → text
+let _lang        = 'en';
 
-// Brief theme summaries for all 114 surahs
-const SURAH_THEMES = {
-  1:'The opening prayer of Islam — praising Allah and asking for guidance on the straight path.',
-  2:'The longest surah, covering faith, law, stories of earlier prophets, and comprehensive guidance for believers.',
-  3:'Family of Imran — discusses the birth of Maryam, Jesus (Isa), and the Battle of Uhud.',
-  4:'Women — detailed laws on family, inheritance, marriage, justice, and social relations.',
-  5:'The Table Spread — dietary laws, covenants with Allah, stories of Jesus and Moses.',
-  6:'Cattle — monotheism, rejecting polytheism, dietary laws, and the signs of Allah in creation.',
-  7:'The Heights — stories of Adam, Noah, Hud, Salih, Lot, Shu\'ayb, and Moses.',
-  8:'The Spoils of War — lessons from the Battle of Badr, ethics of warfare, and trust in Allah.',
-  9:'Repentance — declaring disassociation from treaty-breakers, call to sincere faith, and jihad.',
-  10:'Jonah — Allah\'s signs in creation, the story of Yunus, and the nature of divine guidance.',
-  11:'Hud — stories of Noah, Hud, Salih, Abraham, Lot, Shu\'ayb, and Moses as warnings and lessons.',
-  12:'Joseph — "the best of stories" — a complete narrative of Prophet Yusuf\'s life and patience.',
-  13:'Thunder — signs of Allah in nature, the power of divine knowledge, and truth of revelation.',
-  14:'Abraham — Ibrahim\'s prayer for Makkah, gratitude, and the nature of disbelief and belief.',
-  15:'The Rocky Tract — the people of Thamud, signs of creation, and comfort for the Prophet ﷺ.',
-  16:'The Bee — Allah\'s countless blessings, the honey bee, and guidance through creation.',
-  17:'The Night Journey — Isra\' of the Prophet ﷺ, commandments, and the Quran as guidance.',
-  18:'The Cave — four stories: the Sleepers, the Two Gardens, Moses and Khidr, Dhul-Qarnayn.',
-  19:'Mary — stories of Zakariyya, Yahya, and Maryam giving birth to Isa (Jesus).',
-  20:'Ta-Ha — the story of Moses in detail, lessons of patience, and remembrance of Allah.',
-  21:'The Prophets — mentions of 18 prophets and the universal message of monotheism.',
-  22:'The Pilgrimage — Hajj, sacrifice, the Day of Judgement, and spiritual struggle.',
-  23:'The Believers — qualities of successful believers, stories of prophets, and resurrection.',
-  24:'The Light — laws of modesty, slander, the Light verse (Ayat al-Nur), and social ethics.',
-  25:'The Criterion — distinguishing truth from falsehood, qualities of servants of the Most Merciful.',
-  26:'The Poets — stories of Moses, Ibrahim, Noah, Hud, Salih, Lot, and Shu\'ayb.',
-  27:'The Ant — Solomon and the Queen of Sheba, the miracle of knowledge and prophethood.',
-  28:'The Story — Moses\'s life in detail from birth through prophethood.',
-  29:'The Spider — the frailty of worldly attachments, stories of earlier prophets, and steadfastness.',
-  30:'The Romans — Byzantine victory prophecy, signs in creation, and the nature of time.',
-  31:'Luqman — wisdom of Luqman, gratitude, obedience to parents, and trust in Allah.',
-  32:'The Prostration — creation of the universe and humans, the Hereafter, and revelation.',
-  33:'The Clans — Battle of the Trench, social laws for the Prophet\'s household, hijab.',
-  34:'Saba — story of Sheba\'s prosperity and downfall, gratitude, and the reality of wealth.',
-  35:'The Originator — Allah as the Creator of all, the diversity of creation, and His mercy.',
-  36:'Ya-Sin — the "heart of the Quran" — resurrection, monotheism, and the power of Allah.',
-  37:'Those Who Set the Ranks — angels, Ibrahim\'s willingness to sacrifice Ismail, and paradise.',
-  38:'Sad — stories of David (Dawud), Solomon (Sulayman), Job (Ayyub), and warnings to disbelievers.',
-  39:'The Groups — sincere worship, the Quran as healing, and the gathering on Judgement Day.',
-  40:'The Forgiver — Allah\'s forgiveness, the story of the believer among Pharaoh\'s people.',
-  41:'Explained in Detail — the Quran as clear guidance, consequences of denying truth.',
-  42:'Consultation — Shura (consultation) in governance, Allah\'s mercy, and unity of revelation.',
-  43:'Ornaments of Gold — Ibrahim rejecting idolatry, Jesus as a sign, and eternal blessings.',
-  44:'The Smoke — warning of divine punishment, the story of Pharaoh, and the Day of Decision.',
-  45:'The Crouching — signs of Allah in creation, accountability, and the arrogance of disbelievers.',
-  46:'The Wind-Curved Sandhills — Hud and the people of Aad, sincere worship, and patience.',
-  47:'Muhammad — jihad, the treatment of prisoners, and the qualities of true believers.',
-  48:'The Victory — Treaty of Hudaybiyyah, the great victory (Fath Makkah), and believers\' qualities.',
-  49:'The Inner Apartments — etiquette with the Prophet ﷺ, backbiting, and brotherhood.',
-  50:'Qaf — the reality of resurrection, the Quran as a reminder, and accountability.',
-  51:'The Winnowing Winds — divine promises, stories of Ibrahim and earlier peoples, creation signs.',
-  52:'The Mount — the reality of the afterlife, the Quran\'s challenge, and patience.',
-  53:'The Star — the Prophet\'s direct vision of revelation, monotheism, and divine authority.',
-  54:'The Moon — the splitting of the moon, stories of Nuh and earlier peoples, and warnings.',
-  55:'The Most Merciful — the 31 divine blessings repeated: "Which of the favors of your Lord will you deny?"',
-  56:'The Inevitable Event — three groups on the Day of Judgement and their destinies.',
-  57:'The Iron — spending in Allah\'s cause, the light of faith, and the nature of worldly life.',
-  58:'The Pleading Woman — divorce laws (zihar), secret conspiracies, and true friendship.',
-  59:'The Exile — expulsion of Banu Nadir, division of spoils, and the names of Allah.',
-  60:'She Who Is Tested — loyalty to Allah over family, treatment of believing women migrants.',
-  61:'The Row — importance of unity and steadfastness, Jesus\'s prophecy of Muhammad ﷺ.',
-  62:'Friday — obligation of Jumu\'ah prayer, not abandoning worship for commerce.',
-  63:'The Hypocrites — describing the traits of hypocrites and warning against their behavior.',
-  64:'Mutual Disillusion — the Day when truths are revealed, spending for Allah, and trust.',
-  65:'Divorce — detailed laws of divorce, waiting periods, and responsibility toward family.',
-  66:'The Prohibition — lessons from the Prophet\'s household, obedience to Allah.',
-  67:'The Sovereignty — Allah\'s dominion, the purpose of life as a test, and the Hereafter.',
-  68:'The Pen — defending the Prophet\'s character, the story of the owners of the garden.',
-  69:'The Reality — the Day of Judgement, the fate of earlier civilizations, and the Quran.',
-  70:'The Ascending Stairways — patience in adversity, qualities of believers, and the Day of Reckoning.',
-  71:'Noah — the complete story of Prophet Nuh\'s centuries-long mission.',
-  72:'The Jinn — jinn accepting Islam after hearing the Quran, and monotheism.',
-  73:'The Enshrouded One — command for night prayer (Tahajjud) and patience.',
-  74:'The Cloaked One — command to warn, the number 19, and accountability.',
-  75:'The Resurrection — certainty of resurrection, the dying moments, and Judgement Day.',
-  76:'Man — creation of humans, gratitude, the rewards of the righteous, and patience.',
-  77:'The Emissaries — a series of reminders about the Day of Judgement and divine warnings.',
-  78:'The Great News — the certainty of resurrection and Judgement Day.',
-  79:'Those Who Drag Forth — the angels at death, story of Moses and Pharaoh, and resurrection.',
-  80:'He Frowned — the Prophet\'s interaction with Ibn Umm Maktum and divine revelation.',
-  81:'The Folding Up — vivid description of the Day of Judgement and the Quran\'s truth.',
-  82:'The Cleaving — stars falling, heavens splitting, and the Book of Deeds.',
-  83:'The Defrauding — warning to those who cheat in weights and measures.',
-  84:'The Splitting Asunder — the sky splitting, returning to Allah, and the Hereafter.',
-  85:'The Mansions of the Stars — the People of the Ditch, Allah\'s forgiveness and power.',
-  86:'The Night Visitant — the piercing star, the Quran as a decisive word.',
-  87:'The Most High — glorifying Allah, the Prophet\'s mission, and the afterlife.',
-  88:'The Overwhelming Event — the Day of Judgement and the two different fates.',
-  89:'The Dawn — lessons from Aad, Thamud, and Pharaoh, and the content soul.',
-  90:'The City — the struggles of human life, the two paths, and freeing slaves.',
-  91:'The Sun — the story of Thamud and the she-camel, purifying the soul.',
-  92:'The Night — two paths: generosity vs stinginess, and working toward righteousness.',
-  93:'The Morning Hours — comfort to the Prophet ﷺ: Allah has not forsaken you.',
-  94:'The Relief — opening of the chest, with every hardship comes ease.',
-  95:'The Fig — the dignity of humans, accountability, and divine justice.',
-  96:'The Clot — the first revelation, Allah taught by the pen, and prostration.',
-  97:'The Night of Power — Laylatul Qadr is better than a thousand months.',
-  98:'The Clear Proof — the People of the Book, mushrikeen, and sincere worship.',
-  99:'The Earthquake — the earth shaking on Judgement Day and accountability.',
-  100:'The Coursers — the human inclination toward ingratitude and love of wealth.',
-  101:'The Calamity — the Day of Judgement and the weighing of deeds.',
-  102:'Rivalry in World Increase — the distraction of accumulating wealth until death.',
-  103:'Time — humanity is in loss except those who believe, do good, and encourage truth and patience.',
-  104:'The Slanderer — destruction of those who slander and hoard wealth.',
-  105:'The Elephant — Allah\'s protection of the Kaaba from Abraha\'s army.',
-  106:'Quraysh — Allah\'s blessings on the Quraysh and their duty of worship.',
-  107:'Small Kindnesses — the one who neglects prayer and refuses small help.',
-  108:'Abundance — Allah\'s gift of Kawthar and the command for sacrifice.',
-  109:'The Disbelievers — clear declaration: "To you your religion, to me mine."',
-  110:'The Divine Support — the coming of Allah\'s help and mass conversions.',
-  111:'The Palm Fiber — Abu Lahab and his wife, enemies of the Prophet ﷺ.',
-  112:'Sincerity — the purest declaration of Allah\'s absolute Oneness.',
-  113:'The Daybreak — seeking refuge in Allah from the evils of creation and darkness.',
-  114:'Mankind — seeking refuge in the Lord of mankind from whispering evil.'
-};
+// ── Available Translations ──
+const TRANSLATIONS = [
+  { group:'None', items:[{ id:'none', name:'Arabic Only' }] },
+  { group:'English', items:[
+    { id:'en.asad',      name:'Muhammad Asad'        },
+    { id:'en.pickthall', name:'Pickthall'            },
+    { id:'en.yusufali',  name:'Yusuf Ali'            },
+    { id:'en.sahih',     name:'Saheeh International' },
+  ]},
+  { group:'Français', items:[{ id:'fr.hamidullah', name:'Hamidullah' }] },
+  { group:'Türkçe',   items:[{ id:'tr.ates',       name:'Ateş'       }] },
+  { group:'اردو',     items:[{ id:'ur.maududi',    name:'Maududi'    }] },
+  { group:'Indonesia',items:[{ id:'id.indonesian', name:'Kemenag RI' }] },
+];
 
-async function loadSurahs() {
+// ── Available Tafsirs ──
+const TAFSIRS = [
+  { id:'ar.muyassar', name:'الميسر',            dir:'rtl' },
+  { id:'ar.jalalayn', name:'الجلالين',          dir:'rtl' },
+  { id:'ar.katheer',  name:'ابن كثير',          dir:'rtl' },
+  { id:'ar.saadi',    name:'السعدي',            dir:'rtl' },
+  { id:'ar.baghawy',  name:'البغوي',            dir:'rtl' },
+  { id:'ar.tabari',   name:'الطبري',            dir:'rtl' },
+  { id:'ar.qurtubi',  name:'القرطبي',           dir:'rtl' },
+  { id:'ar.waseet',   name:'الوسيط (الطنطاوي)', dir:'rtl' },
+  { id:'en.maududi',  name:'Maududi (EN)',      dir:'ltr' },
+];
+
+function defaultTrans(lang) {
+  const map = { en:'en.asad', fr:'fr.hamidullah', tr:'tr.ates', ur:'ur.maududi', id:'id.indonesian', ar:'none' };
+  const id = map[lang] || 'en.asad';
+  for (const g of TRANSLATIONS) {
+    const f = g.items.find(i => i.id === id);
+    if (f) return f;
+  }
+  return TRANSLATIONS[1].items[0];
+}
+
+// ── Helpers ──
+const $  = id => document.getElementById(id);
+const q  = (el, sel) => el?.querySelector(sel);
+const qa = (el, sel) => el?.querySelectorAll(sel);
+
+function surahSelectOptions() {
+  return _surahs.map(s => `<option value="${s.number}">${s.number}. ${s.englishName} — ${s.name}</option>`).join('');
+}
+function syncSurahSelects() {
+  ['qrHeadSel','qrTafSel'].forEach(id => {
+    const el = $(id);
+    if (!el || !_surahs.length) return;
+    if (!el.dataset.filled) { el.innerHTML = surahSelectOptions(); el.dataset.filled='1'; }
+    if (_currentNum) el.value = _currentNum;
+  });
+}
+
+// ── Load surah list ──
+async function loadList() {
+  if (_surahs.length) { renderGrid(); return; }
+  const grid = $('qrGrid');
+  if (!grid) return;
+  grid.innerHTML = '<div style="text-align:center;padding:60px;grid-column:1/-1"><i class="ri-loader-4-line" style="font-size:28px;animation:lSpin 1s linear infinite;color:var(--emerald-600)"></i></div>';
   try {
     const r = await fetch('https://api.alquran.cloud/v1/surah');
-    const d = await r.json();
-    surahsList = d.data;
-    renderSurahs(surahsList, _lang);
+    _surahs = (await r.json()).data;
+    renderGrid();
+    syncSurahSelects();
   } catch(e) {
-    const grid = document.getElementById('qrGrid');
-    if (grid) grid.innerHTML = '<p style="color:var(--text-3);padding:20px">Failed to load. Check your connection.</p>';
+    grid.innerHTML = '<p style="color:var(--text-3);text-align:center;padding:40px;grid-column:1/-1">Failed to load. Check your connection.</p>';
   }
 }
 
-function renderSurahs(list, lang) {
-  const grid = document.getElementById('qrGrid');
+function renderGrid() {
+  const grid = $('qrGrid');
   if (!grid) return;
+  const q = $('qrListSearch')?.value?.toLowerCase() || '';
+  const list = q
+    ? _surahs.filter(s =>
+        s.englishName.toLowerCase().includes(q) ||
+        s.name.includes(q) ||
+        s.number.toString() === q ||
+        s.englishNameTranslation.toLowerCase().includes(q)
+      )
+    : _surahs;
+
   grid.innerHTML = list.map(s => {
-    const type = s.revelationType==='Meccan' ? 'Meccan' : 'Medinan';
-    const typeAr = s.revelationType==='Meccan' ? 'مكية' : 'مدنية';
+    const type = s.revelationType === 'Meccan'
+      ? (_lang==='ar'?'مكية':'Meccan')
+      : (_lang==='ar'?'مدنية':'Medinan');
     return `<div class="qr-card" data-num="${s.number}">
       <div class="qr-num">${s.number}</div>
       <div class="qr-ar">${s.name}</div>
       <div class="qr-en">${s.englishName}</div>
-      <div class="qr-info">${s.numberOfAyahs} ${lang==='ar'?'آية':'verses'} · ${lang==='ar'?typeAr:type}</div>
+      <div class="qr-info">${s.numberOfAyahs} ${_lang==='ar'?'آية':'verses'} · ${type}</div>
     </div>`;
   }).join('');
+
   grid.querySelectorAll('.qr-card').forEach(card => {
-    card.addEventListener('click', () => openSurah(parseInt(card.dataset.num), lang));
+    card.addEventListener('click', () => openSurah(parseInt(card.dataset.num)));
   });
 }
 
-async function openSurah(num, lang) {
-  const listEl    = document.getElementById('qrList');
-  const readingEl = document.getElementById('qrReading');
-  const contentEl = document.getElementById('qrContent');
-  if (!listEl || !readingEl || !contentEl) return;
+// ── Open a surah ──
+async function openSurah(num) {
+  _currentNum  = num;
+  _arAyahs     = [];
+  _transAyahs  = [];
+  _tafsirCache = {};
+  closeTafsir();
+  closeTrans();
 
-  listEl.classList.add('hide');
-  readingEl.classList.add('show');
+  // Swap views
+  $('qrListView').style.display  = 'none';
+  $('qrReadView').style.display  = 'block';
+  window.scrollTo({ top:0, behavior:'instant' });
 
-  // ← FIXED: scroll to TOP of page when surah opens
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Loading state
+  $('qrContent').innerHTML = `
+    <div style="text-align:center;padding:100px 20px;color:var(--text-3)">
+      <i class="ri-loader-4-line" style="font-size:36px;animation:lSpin 1s linear infinite;color:var(--emerald-600)"></i>
+      <div style="margin-top:16px">${_lang==='ar'?'جار التحميل...':'Loading surah...'}</div>
+    </div>`;
 
-  contentEl.innerHTML = '<div class="qr-loading"><i class="ri-loader-4-line" style="animation:lSpin 1s linear infinite"></i> Loading surah...</div>';
+  syncSurahSelects();
 
   try {
-    const [arRes, enRes] = await Promise.all([
-      fetch(`https://api.alquran.cloud/v1/surah/${num}/ar.alafasy`),
-      fetch(`https://api.alquran.cloud/v1/surah/${num}/en.asad`)
-    ]);
-    const ar = await arRes.json(), en = await enRes.json();
-    const arAyahs = ar.data.ayahs, enAyahs = en.data.ayahs;
-    const surah = surahsList.find(s => s.number === num);
+    _currentData = _surahs.find(s => s.number === num) || null;
 
-    // Surah overview header
-    const theme = SURAH_THEMES[num] || '';
-    let html = `
-      <div class="qr-surah-header">
-        <div class="qr-surah-name-ar">${ar.data.name}</div>
-        <div class="qr-surah-meta">
-          <span><i class="ri-map-pin-line"></i> ${ar.data.revelationType}</span>
-          <span><i class="ri-list-ordered"></i> ${arAyahs.length} ${lang==='ar'?'آية':'verses'}</span>
-        </div>
-        ${theme ? `<div class="qr-surah-theme"><i class="ri-lightbulb-line"></i> ${theme}</div>` : ''}
-      </div>`;
+    // Fetch Arabic text
+    const arR = await fetch(`https://api.alquran.cloud/v1/surah/${num}/ar.alafasy`);
+    _arAyahs   = (await arR.json()).data.ayahs;
 
-    if (num !== 1 && num !== 9) {
-      html += '<div class="qr-bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>';
+    // Fetch translation (unless Arabic-only)
+    if (_trans && _trans.id !== 'none') {
+      try {
+        const tR  = await fetch(`https://api.alquran.cloud/v1/surah/${num}/${_trans.id}`);
+        _transAyahs = (await tR.json()).data.ayahs;
+      } catch { _transAyahs = []; }
     }
 
-    // Verses with tafsir toggle
-    html += arAyahs.map((a, i) => `
-      <div class="qr-verse" id="verse-${num}-${a.numberInSurah}">
-        <div class="qr-verse-num">${a.numberInSurah}</div>
-        <div class="qr-verse-ar">${a.text}</div>
-        <div class="qr-verse-en">${enAyahs[i]?.text || ''}</div>
-        <button class="qr-tafsir-btn" onclick="window.toggleTafsir(${num}, ${a.numberInSurah}, this)">
-          <i class="ri-book-2-line"></i> ${lang==='ar'?'التفسير':'Tafsir'}
-        </button>
-        <div class="qr-tafsir-content" id="tafsir-${num}-${a.numberInSurah}" style="display:none"></div>
-      </div>`).join('');
-
-    contentEl.innerHTML = html;
+    renderContent();
+    // Update translation button label
+    updateTransBtn();
 
   } catch(e) {
-    contentEl.innerHTML = '<p style="color:var(--text-3);padding:20px">Failed to load surah. Please try again.</p>';
+    $('qrContent').innerHTML = `<p style="color:var(--text-3);text-align:center;padding:40px">Failed to load surah. Please try again.</p>`;
   }
 }
 
-async function toggleTafsir(surahNum, ayahNum, btn) {
-  const tafsirEl = document.getElementById(`tafsir-${surahNum}-${ayahNum}`);
-  if (!tafsirEl) return;
+// ── Render main content ──
+function renderContent() {
+  window.scrollTo({ top:0, behavior:'instant' });
+  if (_mode === 'reading') renderReading();
+  else renderVerse();
+}
 
-  // Toggle off
-  if (tafsirEl.style.display !== 'none') {
-    tafsirEl.style.display = 'none';
-    btn.innerHTML = `<i class="ri-book-2-line"></i> Tafsir`;
-    return;
+function renderVerse() {
+  const content = $('qrContent');
+  if (!content || !_arAyahs.length) return;
+  const isAr = _lang === 'ar';
+  const hasTrans = _transAyahs.length > 0;
+
+  let html = `
+    <div class="qrn-banner">
+      <div class="qrn-banner-ar">${_currentData?.name || ''}</div>
+      <div class="qrn-banner-en">${_currentData?.englishName || ''} — ${_currentData?.englishNameTranslation || ''}</div>
+      <div class="qrn-banner-meta">
+        <span><i class="ri-map-pin-2-line"></i> ${_currentData?.revelationType||''}</span>
+        <span><i class="ri-list-ordered"></i> ${_arAyahs.length} ${isAr?'آية':'verses'}</span>
+      </div>
+    </div>`;
+
+  if (_currentNum !== 1 && _currentNum !== 9) {
+    html += `<div class="qrn-bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>`;
   }
 
-  // Already loaded
-  if (tafsirEl.dataset.loaded) {
-    tafsirEl.style.display = 'block';
-    btn.innerHTML = `<i class="ri-eye-off-line"></i> Hide`;
-    return;
+  html += _arAyahs.map((a, i) => `
+    <div class="qrn-verse" id="qrnV${i}" data-idx="${i}">
+      <div class="qrn-verse-top">
+        <span class="qrn-verse-ref">${_currentNum}:${a.numberInSurah}</span>
+      </div>
+      <div class="qrn-arabic">${a.text}</div>
+      ${hasTrans && _transAyahs[i]
+        ? `<div class="qrn-trans">${_transAyahs[i].text}</div>` : ''}
+      <div class="qrn-actions">
+        <button class="qrn-tafsir-btn" data-idx="${i}">
+          <i class="ri-book-2-line"></i>
+          ${isAr ? 'التفسير' : 'Tafsir'}
+        </button>
+      </div>
+    </div>`).join('');
+
+  content.innerHTML = html;
+
+  content.querySelectorAll('.qrn-tafsir-btn').forEach(btn => {
+    btn.addEventListener('click', () => openTafsir(parseInt(btn.dataset.idx)));
+  });
+}
+
+function renderReading() {
+  const content = $('qrContent');
+  if (!content || !_arAyahs.length) return;
+  const isAr = _lang === 'ar';
+  const hasTrans = _transAyahs.length > 0;
+
+  let html = `
+    <div class="qrn-banner">
+      <div class="qrn-banner-ar">${_currentData?.name || ''}</div>
+      <div class="qrn-banner-en">${_currentData?.englishName || ''}</div>
+      <div class="qrn-banner-meta">
+        <span>${_currentData?.revelationType||''}</span>
+        <span>${_arAyahs.length} ${isAr?'آية':'verses'}</span>
+      </div>
+    </div>`;
+
+  if (_currentNum !== 1 && _currentNum !== 9) {
+    html += `<div class="qrn-bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>`;
   }
 
-  // Fetch tafsir
-  btn.innerHTML = `<i class="ri-loader-4-line" style="animation:lSpin 1s linear infinite"></i> Loading...`;
-  btn.disabled = true;
+  // Continuous Arabic mushaf style
+  html += `<div class="qrn-reading-block">
+    ${_arAyahs.map(a => `${a.text} <span class="qrn-vmarker">${a.numberInSurah}</span>`).join(' ')}
+  </div>`;
+
+  // Translation block
+  if (hasTrans) {
+    html += `<div class="qrn-reading-trans">
+      <div class="qrn-rt-label">${_trans?.name || 'Translation'}</div>
+      ${_transAyahs.map((t,i) => `<span class="qrn-rt-verse"><strong>${_arAyahs[i]?.numberInSurah}.</strong> ${t.text}</span>`).join(' ')}
+    </div>`;
+  }
+
+  content.innerHTML = html;
+}
+
+// ── Tafsir Modal ──
+function openTafsir(idx) {
+  _tafsirIdx = idx;
+  $('qrTafsirOverlay').style.display = 'flex';
+  updateTafsirHeader();
+  loadTafsir(_tafsirEd, idx);
+}
+
+function closeTafsir() {
+  const el = $('qrTafsirOverlay');
+  if (el) el.style.display = 'none';
+}
+
+function updateTafsirHeader() {
+  const ayah = _arAyahs[_tafsirIdx];
+  if (!ayah) return;
+
+  const refEl    = $('qrTafRef');
+  const verseEl  = $('qrTafVerse');
+  const prevBtn  = $('qrTafPrev');
+  const nextBtn  = $('qrTafNext');
+
+  if (refEl)   refEl.textContent = `${_currentNum}:${ayah.numberInSurah}`;
+  if (verseEl) verseEl.textContent = ayah.text;
+  if (prevBtn) prevBtn.disabled = _tafsirIdx === 0;
+  if (nextBtn) nextBtn.disabled = _tafsirIdx === _arAyahs.length - 1;
+
+  syncSurahSelects();
+}
+
+async function loadTafsir(edition, idx) {
+  _tafsirEd = edition;
+
+  // Active tab
+  document.querySelectorAll('.qrn-taf-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.ed === edition);
+  });
+
+  const textEl = $('qrTafText');
+  if (!textEl) return;
+
+  const ayah = _arAyahs[idx];
+  if (!ayah) return;
+
+  const cacheKey = `${edition}:${_currentNum}:${ayah.numberInSurah}`;
+  if (_tafsirCache[cacheKey]) { showTafsirText(_tafsirCache[cacheKey], edition); return; }
+
+  textEl.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-3)">
+    <i class="ri-loader-4-line" style="font-size:24px;animation:lSpin 1s linear infinite"></i>
+  </div>`;
 
   try {
-    const r = await fetch(`https://api.alquran.cloud/v1/ayah/${surahNum}:${ayahNum}/en.maududi`);
+    const r = await fetch(`https://api.alquran.cloud/v1/ayah/${_currentNum}:${ayah.numberInSurah}/${edition}`);
     const d = await r.json();
     const text = d.data?.text || '';
     if (text) {
-      tafsirEl.innerHTML = `<div class="qr-tafsir-text"><strong>Maududi:</strong> ${text}</div>`;
-      tafsirEl.dataset.loaded = '1';
-      tafsirEl.style.display = 'block';
-      btn.innerHTML = `<i class="ri-eye-off-line"></i> Hide`;
+      _tafsirCache[cacheKey] = text;
+      showTafsirText(text, edition);
     } else {
-      tafsirEl.innerHTML = '<div class="qr-tafsir-text" style="color:var(--text-3)">Tafsir not available for this verse.</div>';
-      tafsirEl.dataset.loaded = '1';
-      tafsirEl.style.display = 'block';
-      btn.innerHTML = `<i class="ri-eye-off-line"></i> Hide`;
+      textEl.innerHTML = `<p style="color:var(--text-3);padding:20px;text-align:center">Not available for this verse in this edition.</p>`;
     }
-  } catch(e) {
-    btn.innerHTML = `<i class="ri-book-2-line"></i> Tafsir`;
+  } catch {
+    textEl.innerHTML = `<p style="color:var(--text-3);padding:20px;text-align:center">Failed to load. Check your connection.</p>`;
   }
-  btn.disabled = false;
 }
 
-function closeSurah() {
-  document.getElementById('qrList')?.classList.remove('hide');
-  document.getElementById('qrReading')?.classList.remove('show');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function showTafsirText(text, edition) {
+  const el   = $('qrTafText');
+  const info = TAFSIRS.find(t => t.id === edition);
+  if (el) el.innerHTML = `<div class="qrn-taf-body" dir="${info?.dir||'rtl'}">${text}</div>`;
 }
 
-function filterSurahs(q, lang) {
-  if (!q) { renderSurahs(surahsList, lang); return; }
-  const f = surahsList.filter(s =>
-    s.englishName.toLowerCase().includes(q.toLowerCase()) ||
-    s.name.includes(q) ||
-    s.number.toString()===q ||
-    s.englishNameTranslation.toLowerCase().includes(q.toLowerCase())
-  );
-  renderSurahs(f, lang);
+// ── Translation Sidebar ──
+function openTrans() {
+  $('qrTransSidebar')?.classList.add('open');
+}
+function closeTrans() {
+  $('qrTransSidebar')?.classList.remove('open');
 }
 
+function selectTrans(id, name) {
+  _trans = { id, name };
+  document.querySelectorAll('.qrn-trans-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.id === id);
+  });
+  updateTransBtn();
+  if (_currentNum) openSurah(_currentNum);
+  closeTrans();
+}
+
+function updateTransBtn() {
+  const el = $('qrTransBtn');
+  if (el && _trans) {
+    el.innerHTML = `<i class="ri-translate-2"></i> ${_trans.name} <i class="ri-arrow-down-s-line"></i>`;
+  }
+}
+
+// ── Mode toggle ──
+function setMode(m) {
+  _mode = m;
+  $('qrModeVerse')?.classList.toggle('active', m==='verse');
+  $('qrModeRead')?.classList.toggle('active', m==='reading');
+  renderContent();
+}
+
+// ── Back ──
+function goBack() {
+  _currentNum = null;
+  $('qrListView').style.display  = 'block';
+  $('qrReadView').style.display  = 'none';
+  closeTafsir();
+  closeTrans();
+  window.scrollTo({ top:0, behavior:'instant' });
+}
+
+// ── Verse search ──
+function searchVerse(q) {
+  const cards = document.querySelectorAll('.qrn-verse');
+  if (!q.trim()) { cards.forEach(c=>{ c.style.opacity='1'; c.style.display=''; }); return; }
+  const num = parseInt(q);
+  let scrolled = false;
+  cards.forEach((card, i) => {
+    const ayah = _arAyahs[i];
+    const trs  = _transAyahs[i];
+    const hit  = (!isNaN(num) && ayah?.numberInSurah===num) ||
+                  ayah?.text?.includes(q) ||
+                  trs?.text?.toLowerCase().includes(q.toLowerCase());
+    card.style.opacity = hit ? '1' : '0.25';
+    card.style.display = '';
+    if (hit && !scrolled && !isNaN(num)) { card.scrollIntoView({behavior:'smooth',block:'start'}); scrolled=true; }
+  });
+}
+
+// ── Page Module ──
 const Quran = {
   render(lang) {
     _lang = lang;
-    const isAr = lang==='ar';
+    if (!_trans) _trans = defaultTrans(lang);
+    const isAr = lang === 'ar';
+
+    const transListHtml = TRANSLATIONS.map(g => `
+      <div class="qrn-ts-group">
+        <div class="qrn-ts-glabel">${g.group}</div>
+        ${g.items.map(item => `
+          <div class="qrn-trans-item${_trans?.id===item.id?' active':''}" data-id="${item.id}" data-name="${item.name}">
+            ${_trans?.id===item.id?'<i class="ri-check-line" style="margin-right:6px;color:var(--emerald-600)"></i>':'<span style="width:20px;display:inline-block"></span>'}
+            ${item.name}
+          </div>`).join('')}
+      </div>`).join('');
+
+    const tafsirTabsHtml = TAFSIRS.map(t => `
+      <button class="qrn-taf-tab${t.id===_tafsirEd?' active':''}" data-ed="${t.id}">${t.name}</button>
+    `).join('');
+
     return `
-<div class="pg-hd">
-  <div class="pg-hd-ic"><i class="ri-book-open-fill"></i></div>
-  <h1>${isAr?'القرآن الكريم':'Quran Reader'}</h1>
-  <p>${isAr?'تصفح السور مع الترجمة والتفسير':'Browse all 114 surahs with translation and tafsir.'}</p>
-</div>
-<div class="pg-body">
-  <div id="qrList">
-    <div class="qr-search rv">
-      <input type="text" id="qrSearch" placeholder="${isAr?'ابحث عن سورة...':'Search surah by name or number...'}" oninput="window.qrFilter(this.value)">
+<div id="qrApp">
+
+  <!-- ══ SURAH LIST ══ -->
+  <div id="qrListView">
+    <div class="pg-hd">
+      <div class="pg-hd-ic"><i class="ri-book-open-fill"></i></div>
+      <h1>${isAr?'القرآن الكريم':'Quran Reader'}</h1>
+      <p>${isAr?'١١٤ سورة مع الترجمة والتفسير':'114 surahs with translation and authentic tafsir.'}</p>
     </div>
-    <div class="qr-grid rv rv-d1" id="qrGrid">
-      <div class="qr-loading"><i class="ri-loader-4-line" style="animation:lSpin 1s linear infinite"></i> ${isAr?'جار التحميل...':'Loading surahs...'}</div>
+    <div class="pg-body">
+      <div class="qr-search rv">
+        <input type="text" id="qrListSearch"
+          placeholder="${isAr?'ابحث بالاسم أو الرقم...':'Search by name or number...'}">
+      </div>
+      <div class="qr-grid rv rv-d1" id="qrGrid"></div>
     </div>
   </div>
-  <div class="qr-reading" id="qrReading">
-    <button class="qr-back" onclick="window.closeSurah()"><i class="ri-arrow-left-line"></i> ${isAr?'العودة':'Back to Surahs'}</button>
-    <div id="qrContent"></div>
-  </div>
-</div>
+
+  <!-- ══ SURAH READER ══ -->
+  <div id="qrReadView" style="display:none">
+
+    <!-- Sticky header -->
+    <div class="qrn-header">
+      <button class="qrn-hbtn" id="qrBackBtn" title="${isAr?'العودة':'Back'}">
+        <i class="${isAr?'ri-arrow-right-line':'ri-arrow-left-line'}"></i>
+      </button>
+
+      <select class="qrn-hsel" id="qrHeadSel"></select>
+
+      <div class="qrn-hsearch">
+        <i class="ri-search-line"></i>
+        <input type="text" id="qrVerseSearch"
+          placeholder="${isAr?'رقم الآية...':'Verse no...'}">
+      </div>
+
+      <div class="qrn-modes">
+        <button class="qrn-mode active" id="qrModeVerse">
+          <i class="ri-list-check"></i>
+          <span>${isAr?'آية آية':'Verse'}</span>
+        </button>
+        <button class="qrn-mode" id="qrModeRead">
+          <i class="ri-book-read-line"></i>
+          <span>${isAr?'قراءة':'Reading'}</span>
+        </button>
+      </div>
+
+      <button class="qrn-trans-btn" id="qrTransBtn">
+        <i class="ri-translate-2"></i>
+        <span>${_trans?.name||'Translation'}</span>
+        <i class="ri-arrow-down-s-line"></i>
+      </button>
+    </div>
+
+    <!-- Verse content -->
+    <div class="qrn-content" id="qrContent"></div>
+
+    <!-- ── Translation sidebar ── -->
+    <div class="qrn-trans-sidebar" id="qrTransSidebar">
+      <div class="qrn-ts-header">
+        <span>${isAr?'اختر الترجمة':'Translations'}</span>
+        <button id="qrTransClose"><i class="ri-close-line"></i></button>
+      </div>
+      <div class="qrn-ts-list">${transListHtml}</div>
+    </div>
+
+    <!-- ── Tafsir Modal ── -->
+    <div class="qrn-taf-overlay" id="qrTafsirOverlay" style="display:none">
+      <div class="qrn-taf-modal">
+
+        <!-- Modal header -->
+        <div class="qrn-taf-mhead">
+          <select class="qrn-hsel" id="qrTafSel" style="max-width:180px;font-size:13px"></select>
+          <div class="qrn-taf-nav">
+            <button class="qrn-taf-navbtn" id="qrTafPrev">
+              <i class="${isAr?'ri-arrow-right-s-line':'ri-arrow-left-s-line'}"></i>
+            </button>
+            <span class="qrn-taf-ref" id="qrTafRef">—</span>
+            <button class="qrn-taf-navbtn" id="qrTafNext">
+              <i class="${isAr?'ri-arrow-left-s-line':'ri-arrow-right-s-line'}"></i>
+            </button>
+          </div>
+          <button class="qrn-taf-closebtn" id="qrTafClose">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+
+        <!-- Verse display -->
+        <div class="qrn-taf-verse" id="qrTafVerse"></div>
+
+        <!-- Tafsir edition tabs -->
+        <div class="qrn-taf-tabs" id="qrTafTabs">${tafsirTabsHtml}</div>
+
+        <!-- Tafsir text -->
+        <div class="qrn-taf-text" id="qrTafText">
+          <div style="color:var(--text-3);text-align:center;padding:50px">
+            ${isAr?'اضغط على زر "التفسير" في أي آية':'Click the Tafsir button on any verse to begin'}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- end qrReadView -->
+
+</div><!-- end qrApp -->
 <footer class="ft"><i class="ri-heart-fill"></i> ${isAr?'صُنع للأمة':'Built for the Ummah'}</footer>`;
   },
 
   init(lang) {
     _lang = lang;
-    window.qrFilter    = (q) => filterSurahs(q, lang);
-    window.closeSurah  = closeSurah;
-    window.toggleTafsir = toggleTafsir;
-    loadSurahs();
+    if (!_trans) _trans = defaultTrans(lang);
+
+    // List search
+    $('qrListSearch')?.addEventListener('input', renderGrid);
+
+    // Back button
+    $('qrBackBtn')?.addEventListener('click', goBack);
+
+    // Header surah select
+    $('qrHeadSel')?.addEventListener('change', e => openSurah(parseInt(e.target.value)));
+
+    // Tafsir surah select
+    $('qrTafSel')?.addEventListener('change', e => {
+      closeTafsir();
+      openSurah(parseInt(e.target.value));
+    });
+
+    // Mode buttons
+    $('qrModeVerse')?.addEventListener('click', () => setMode('verse'));
+    $('qrModeRead')?.addEventListener('click',  () => setMode('reading'));
+
+    // Translation sidebar
+    $('qrTransBtn')?.addEventListener('click', openTrans);
+    $('qrTransClose')?.addEventListener('click', closeTrans);
+    $('qrTransSidebar')?.addEventListener('click', e => {
+      const item = e.target.closest('.qrn-trans-item');
+      if (item) selectTrans(item.dataset.id, item.dataset.name);
+    });
+
+    // Tafsir modal
+    $('qrTafClose')?.addEventListener('click', closeTafsir);
+    $('qrTafsirOverlay')?.addEventListener('click', e => {
+      if (e.target === $('qrTafsirOverlay')) closeTafsir();
+    });
+
+    // Tafsir prev / next
+    $('qrTafPrev')?.addEventListener('click', () => {
+      if (_tafsirIdx > 0) { _tafsirIdx--; updateTafsirHeader(); loadTafsir(_tafsirEd, _tafsirIdx); }
+    });
+    $('qrTafNext')?.addEventListener('click', () => {
+      if (_tafsirIdx < _arAyahs.length-1) { _tafsirIdx++; updateTafsirHeader(); loadTafsir(_tafsirEd, _tafsirIdx); }
+    });
+
+    // Tafsir tabs (delegation)
+    $('qrTafTabs')?.addEventListener('click', e => {
+      const tab = e.target.closest('.qrn-taf-tab');
+      if (tab) loadTafsir(tab.dataset.ed, _tafsirIdx);
+    });
+
+    // Verse search
+    $('qrVerseSearch')?.addEventListener('input', e => searchVerse(e.target.value));
+
+    // Close translation sidebar when clicking outside
+    document.addEventListener('click', e => {
+      const sidebar = $('qrTransSidebar');
+      const btn     = $('qrTransBtn');
+      if (sidebar?.classList.contains('open') && !sidebar.contains(e.target) && e.target!==btn && !btn?.contains(e.target)) {
+        closeTrans();
+      }
+    });
+
+    // Load surah list
+    loadList();
   },
 
   destroy() {
-    delete window.qrFilter;
-    delete window.closeSurah;
-    delete window.toggleTafsir;
+    closeTafsir();
+    closeTrans();
+    document.removeEventListener('click', closeTrans);
   }
 };
 
