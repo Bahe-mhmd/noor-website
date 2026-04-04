@@ -1,270 +1,233 @@
 // ═══════════════════════════════════════════════════
-// NOOR — pages/mirath.js: Islamic Inheritance Calculator
-// Based on Quran 4:11-12, 4:176 and classical fiqh
+// NOOR — pages/mirath.js  (fixed render)
 // ═══════════════════════════════════════════════════
-import { t } from '../i18n.js';
 
-/**
- * Core Mirath Engine
- * Implements the primary shares (Fard) and residual (Asabah) system
- * Reference: Quran 4:11-12, 4:176; Radd & Awl adjustments included
- */
-function calculateMirath({ estate, debts, heirs }) {
+function calcMirath({ estate, debts, heirs }) {
   const net = Math.max(0, estate - debts);
   const results = [];
-  let remaining = 1; // fraction of estate
+  let remaining = 1.0;
 
-  const has = (key) => heirs[key] > 0;
-  const num = (key) => heirs[key] || 0;
-
-  // ── Determine fixed shares (Fard) ──
-  // Husband: 1/4 if there are children, 1/2 if no children (Quran 4:12)
-  if (has('husband')) {
-    const share = (has('sons') || has('daughters')) ? { n:1, d:4 } : { n:1, d:2 };
-    results.push({ heir: 'husband', count: 1, fraction: share, ref: 'Quran 4:12' });
-    remaining -= share.n / share.d;
-  }
-
-  // Wife/Wives: 1/8 if there are children, 1/4 if no children (Quran 4:12)
-  if (has('wives')) {
-    const total = (has('sons') || has('daughters')) ? { n:1, d:8 } : { n:1, d:4 };
-    results.push({ heir: 'wives', count: num('wives'), fraction: total, ref: 'Quran 4:12', note: 'divided equally among wives' });
-    remaining -= total.n / total.d;
-  }
-
-  // Daughters only (no sons): 1/2 for one, 2/3 for two or more (Quran 4:11)
+  const has = k => (heirs[k]||0) > 0;
+  const num = k => heirs[k]||0;
   const hasSons = has('sons'), hasDaughters = has('daughters');
-  const sonCount = num('sons'), daughterCount = num('daughters');
 
+  // Husband: 1/4 (with children) or 1/2 (without)
+  if (has('husband')) {
+    const f = (hasSons||hasDaughters) ? [1,4] : [1,2];
+    results.push({ heir:'husband', label_en:'Husband', label_ar:'الزوج', count:1, frac:f, ref:'Quran 4:12' });
+    remaining -= f[0]/f[1];
+  }
+
+  // Wives: 1/8 (with children) or 1/4 (without) — shared equally
+  if (has('wives')) {
+    const f = (hasSons||hasDaughters) ? [1,8] : [1,4];
+    results.push({ heir:'wives', label_en:`Wife${num('wives')>1?`/Wives (×${num('wives')})`:``}`, label_ar:'الزوجة/الزوجات', count:num('wives'), frac:f, ref:'Quran 4:12', note_en:`divided among ${num('wives')} wife${num('wives')>1?'ves':''}` });
+    remaining -= f[0]/f[1];
+  }
+
+  // Daughters only (no sons): 1/2 (one) or 2/3 (two+)
   if (!hasSons && hasDaughters) {
-    const share = daughterCount === 1 ? { n:1, d:2 } : { n:2, d:3 };
-    results.push({ heir: 'daughters', count: daughterCount, fraction: share, ref: 'Quran 4:11' });
-    remaining -= share.n / share.d;
+    const f = num('daughters')===1 ? [1,2] : [2,3];
+    results.push({ heir:'daughters', label_en:`Daughter${num('daughters')>1?'s':''}`, label_ar:'البنات', count:num('daughters'), frac:f, ref:'Quran 4:11' });
+    remaining -= f[0]/f[1];
   }
 
-  // Mother: 1/3 if no children and no 2+ brothers/sisters, else 1/6 (Quran 4:11)
+  // Mother: 1/3 (no children & <2 siblings) or 1/6
   if (has('mother')) {
-    const hasChildren = hasSons || hasDaughters;
-    const blockedByBrothers = num('brothers') >= 2;
-    const share = (!hasChildren && !blockedByBrothers) ? { n:1, d:3 } : { n:1, d:6 };
-    results.push({ heir: 'mother', count: 1, fraction: share, ref: 'Quran 4:11' });
-    remaining -= share.n / share.d;
+    const f = (!hasSons && !hasDaughters && num('brothers')<2) ? [1,3] : [1,6];
+    results.push({ heir:'mother', label_en:'Mother', label_ar:'الأم', count:1, frac:f, ref:'Quran 4:11' });
+    remaining -= f[0]/f[1];
   }
 
-  // Father: 1/6 if there are children (Quran 4:11); asabah if no children
+  // Father with children: 1/6 (fixed) + possible asabah residue
   if (has('father')) {
     if (hasSons || hasDaughters) {
-      results.push({ heir: 'father', count: 1, fraction: { n:1, d:6 }, ref: 'Quran 4:11' });
-      remaining -= 1 / 6;
-      // Father also gets asabah after daughters take their share
-      if (!hasSons && hasDaughters) {
-        // father gets residue
-        if (remaining > 0) {
-          results.push({ heir: 'father_asabah', count: 1, fraction: { residue: true, val: remaining }, ref: 'Residue (Asabah)', note: 'Residual after daughters' share' });
-          remaining = 0;
-        }
+      results.push({ heir:'father_fixed', label_en:'Father (fixed)', label_ar:'الأب (الفرض)', count:1, frac:[1,6], ref:'Quran 4:11' });
+      remaining -= 1/6;
+      // After daughters take their share, father also gets residue
+      if (!hasSons && hasDaughters && remaining > 0.001) {
+        results.push({ heir:'father_asabah', label_en:'Father (residue)', label_ar:'الأب (التعصيب)', count:1, residue:remaining, ref:'Classical fiqh' });
+        remaining = 0;
       }
     }
   }
 
-  // ── Residual heirs (Asabah) ──
-  // Sons (and daughters share with sons 2:1 ratio) — Quran 4:11
-  if (hasSons) {
-    const totalParts = sonCount * 2 + daughterCount;
-    if (remaining > 0) {
-      if (hasDaughters) {
-        const sonShare = (remaining * 2) / totalParts;
-        const dauShare = remaining / totalParts;
-        results.push({ heir: 'sons', count: sonCount, fraction: { residue: true, val: sonShare * sonCount }, ref: 'Quran 4:11 (Asabah)' });
-        results.push({ heir: 'daughters_with_sons', count: daughterCount, fraction: { residue: true, val: dauShare * daughterCount }, ref: 'Quran 4:11 (with sons)' });
-      } else {
-        results.push({ heir: 'sons', count: sonCount, fraction: { residue: true, val: remaining }, ref: 'Quran 4:11 (Asabah)' });
-      }
-      remaining = 0;
+  // Sons + daughters (asabah, 2:1 ratio)
+  if (hasSons && remaining > 0.001) {
+    const totalParts = num('sons')*2 + (hasDaughters ? num('daughters') : 0);
+    if (hasDaughters) {
+      const sonShare  = (remaining * 2 / totalParts) * num('sons');
+      const dauShare  = (remaining * 1 / totalParts) * num('daughters');
+      results.push({ heir:'sons',  label_en:`Son${num('sons')>1?'s':''}`,      label_ar:'الأبناء', count:num('sons'),      residue:sonShare, ref:'Quran 4:11' });
+      results.push({ heir:'daughters_s', label_en:`Daughter${num('daughters')>1?'s':''} (with sons)`, label_ar:'البنات (مع الأبناء)', count:num('daughters'), residue:dauShare, ref:'Quran 4:11' });
+    } else {
+      results.push({ heir:'sons', label_en:`Son${num('sons')>1?'s':''}`, label_ar:'الأبناء', count:num('sons'), residue:remaining, ref:'Quran 4:11' });
     }
-  }
-
-  // Father asabah (if no children)
-  if (has('father') && !hasSons && !hasDaughters && remaining > 0) {
-    results.push({ heir: 'father', count: 1, fraction: { residue: true, val: remaining }, ref: 'Quran 4:11 (Asabah)' });
     remaining = 0;
   }
 
-  // ── Radd (return): if remaining > 0, redistribute back to fixed-share heirs proportionally ──
-  if (remaining > 0.001) {
-    const fardTotal = results.reduce((sum, r) => {
-      if (!r.fraction.residue) return sum + r.fraction.n / r.fraction.d;
-      return sum;
-    }, 0);
-    if (fardTotal > 0) {
-      results.forEach(r => {
-        if (!r.fraction.residue) r.fraction._radd = r.fraction.n / r.fraction.d / fardTotal * remaining;
-      });
-    }
+  // Father asabah (no children)
+  if (has('father') && !hasSons && !hasDaughters && remaining > 0.001) {
+    results.push({ heir:'father_asabah2', label_en:'Father', label_ar:'الأب', count:1, residue:remaining, ref:'Classical fiqh (Asabah)' });
+    remaining = 0;
   }
 
-  // ── Calculate monetary amounts ──
-  const formatted = results.map(r => {
-    let fraction_str, amount;
-    if (r.fraction.residue) {
-      fraction_str = `${(r.fraction.val * 100).toFixed(1)}%`;
-      amount = net * r.fraction.val;
+  // Radd: redistribute leftover proportionally
+  if (remaining > 0.005) {
+    const fixedSum = results.filter(r=>r.frac).reduce((s,r)=>s+r.frac[0]/r.frac[1],0);
+    if (fixedSum>0) results.filter(r=>r.frac).forEach(r=>{ r._radd=(r.frac[0]/r.frac[1]/fixedSum)*remaining; });
+  }
+
+  // Compute amounts
+  return results.map(r => {
+    let fracStr, amount;
+    if (r.residue!=null) {
+      fracStr = `${(r.residue*100).toFixed(1)}%`;
+      amount  = net * r.residue;
     } else {
-      const base = r.fraction.n / r.fraction.d;
-      const extra = r.fraction._radd || 0;
-      const total_frac = base + extra;
-      fraction_str = extra > 0.001
-        ? `${r.fraction.n}/${r.fraction.d} + Radd`
-        : `${r.fraction.n}/${r.fraction.d}`;
-      amount = net * total_frac;
+      const base = r.frac[0]/r.frac[1];
+      const extra = r._radd || 0;
+      fracStr = extra>0.005 ? `${r.frac[0]}/${r.frac[1]} + Radd` : `${r.frac[0]}/${r.frac[1]}`;
+      amount  = net*(base+extra);
     }
-    return { ...r, fraction_str, amount };
+    return {...r, fracStr, amount};
   });
-
-  return { net, results: formatted, remaining };
-}
-
-const HEIR_LABELS = {
-  en: { husband:'Husband', wives:'Wife / Wives', sons:'Sons', daughters:'Daughters', father:'Father', mother:'Mother', father_asabah:'Father (Residue)', daughters_with_sons:'Daughters (with Sons)' },
-  ar: { husband:'الزوج', wives:'الزوجة/الزوجات', sons:'الأبناء', daughters:'البنات', father:'الأب', mother:'الأم', father_asabah:'الأب (التعصيب)', daughters_with_sons:'البنات (مع الأبناء)' },
-  fr: { husband:'Mari', wives:'Femme(s)', sons:'Fils', daughters:'Filles', father:'Père', mother:'Mère', father_asabah:'Père (résidu)', daughters_with_sons:'Filles (avec fils)' },
-  tr: { husband:'Koca', wives:'Eş(ler)', sons:'Oğullar', daughters:'Kızlar', father:'Baba', mother:'Anne', father_asabah:'Baba (kalan)', daughters_with_sons:'Kızlar (oğullarla)' },
-  ur: { husband:'شوہر', wives:'بیوی/بیویاں', sons:'بیٹے', daughters:'بیٹیاں', father:'والد', mother:'والدہ', father_asabah:'والد (بقیہ)', daughters_with_sons:'بیٹیاں (بیٹوں کے ساتھ)' },
-  id: { husband:'Suami', wives:'Istri', sons:'Anak laki-laki', daughters:'Anak perempuan', father:'Ayah', mother:'Ibu', father_asabah:'Ayah (sisa)', daughters_with_sons:'Anak perempuan (dgn laki-laki)' }
-};
-
-let _lang = 'en';
-
-function doCalculate(lang) {
-  const v = id => parseFloat(document.getElementById(id)?.value) || 0;
-  const b = id => document.getElementById(id)?.checked || false;
-
-  const heirs = {
-    husband: b('mHusband') ? 1 : 0,
-    wives: v('mWives'),
-    sons: v('mSons'),
-    daughters: v('mDaughters'),
-    father: b('mFather') ? 1 : 0,
-    mother: b('mMother') ? 1 : 0,
-    brothers: v('mBrothers'),
-  };
-
-  const result = calculateMirath({ estate: v('mEstate'), debts: v('mDebts'), heirs });
-  const labels = HEIR_LABELS[lang] || HEIR_LABELS.en;
-  const cur = document.getElementById('mCurrency')?.value || '$';
-
-  const resEl = document.getElementById('mirathResult');
-  if (!resEl) return;
-
-  resEl.style.display = 'block';
-  resEl.innerHTML = `
-    <div class="mirath-net">
-      <div class="mirath-net-label">${t('mirath.result', lang)}</div>
-      <div class="mirath-net-val">${cur}${result.net.toLocaleString()}</div>
-      <div class="mirath-net-sub">${t('mirath.estate', lang)} after ${t('mirath.debts', lang)}</div>
-    </div>
-    <div class="mirath-table-wrap">
-      <table class="mirath-table">
-        <thead>
-          <tr>
-            <th>${t('mirath.share', lang)}</th>
-            <th>${t('mirath.fraction', lang)}</th>
-            <th>${t('mirath.amount', lang)}</th>
-            <th>${t('mirath.reference', lang)}</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${result.results.map(r => `
-            <tr>
-              <td><strong>${labels[r.heir] || r.heir}</strong> ${r.count > 1 ? `(×${r.count})` : ''} ${r.note ? `<br><small>${r.note}</small>` : ''}</td>
-              <td><span class="mirath-frac">${r.fraction_str}</span></td>
-              <td><strong>${cur}${r.amount.toLocaleString(undefined, {maximumFractionDigits:2})}</strong></td>
-              <td><small class="mirath-ref">${r.ref}</small></td>
-            </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>
-    <div class="mirath-disclaimer">
-      <i class="ri-information-line"></i>
-      ${lang === 'ar'
-        ? 'هذه الحاسبة للمرجعية فقط. استشر عالماً مؤهلاً متخصصاً في علم المواريث لإصدار الحكم النهائي. والله أعلم'
-        : 'This calculator is for reference only. Consult a qualified Islamic scholar specializing in Mirath for a binding ruling. والله أعلم'}
-    </div>`;
 }
 
 const Mirath = {
   render(lang) {
-    _lang = lang;
+    const isAr = lang==='ar';
+    const label = (en,ar,fr,tr,ur,id) => ({en,ar,fr,tr,ur,id}[lang]||en);
+
     return `
 <div class="pg-hd">
   <div class="pg-hd-ic"><i class="ri-scales-3-fill"></i></div>
-  <h1>${t('mirath.title', lang)}</h1>
-  <p>${t('mirath.desc', lang)}</p>
+  <h1>${label('Inheritance (Mirath)','المواريث','Héritage Islamique','Miras Hesabı','وراثت (میراث)','Warisan Islam')}</h1>
+  <p>${label('Calculate Islamic inheritance based on Quran 4:11-12 and 4:176.','احسب الميراث الإسلامي بناءً على القرآن الكريم.','Calculez l\'héritage islamique selon le Coran.','Kuran\'a göre miras hesabı.','قرآن کریم کے مطابق وراثت کا حساب۔','Hitung warisan Islam berdasarkan Quran.')}</p>
 </div>
 <div class="pg-body">
 
   <div class="mirath-form rv">
     <div class="zk-row">
-      <label>${t('mirath.estate', lang)}</label>
-      <div style="display:flex;gap:8px">
-        <select id="mCurrency" style="width:90px;padding:12px;border:1px solid var(--border-1);border-radius:var(--r-sm);background:var(--bg-sunk);color:var(--text-1);font-family:var(--font)">
-          <option>$</option><option>€</option><option>£</option><option value="SAR ">﷼</option><option value="TRY ">₺</option>
-          <option value="PKR ">₨</option><option value="IDR ">Rp</option><option value="EGP ">ج.م</option>
-        </select>
-        <input type="number" id="mEstate" placeholder="0" min="0" style="flex:1;padding:12px;border:1px solid var(--border-1);border-radius:var(--r-sm);background:var(--bg-sunk);color:var(--text-1);font-family:var(--font);font-size:15px">
-      </div>
+      <label>${label('Currency','العملة','Devise','Para Birimi','کرنسی','Mata Uang')}</label>
+      <select id="mCurrency" style="width:100%;padding:12px;border:1px solid var(--border-1);border-radius:var(--r-sm);background:var(--bg-sunk);color:var(--text-1);font-family:var(--font)">
+        <option value="$">USD ($)</option><option value="€">EUR (€)</option><option value="£">GBP (£)</option>
+        <option value="TND ">TND (د.ت)</option><option value="SAR ">SAR (﷼)</option>
+        <option value="TRY ">TRY (₺)</option><option value="PKR ">PKR (₨)</option>
+        <option value="IDR ">IDR (Rp)</option><option value="EGP ">EGP (ج.م)</option>
+        <option value="MAD ">MAD (د.م)</option>
+      </select>
     </div>
     <div class="zk-row">
-      <label>${t('mirath.debts', lang)}</label>
+      <label>${label('Total Estate Value','إجمالي قيمة التركة','Valeur totale de la succession','Toplam miras değeri','کل ترکہ','Total harta warisan')}</label>
+      <input type="number" id="mEstate" placeholder="0" min="0" style="width:100%;padding:12px;border:1px solid var(--border-1);border-radius:var(--r-sm);background:var(--bg-sunk);color:var(--text-1);font-family:var(--font);font-size:15px">
+    </div>
+    <div class="zk-row">
+      <label>${label('Debts & Funeral Expenses (deducted first)','الديون ومصاريف الجنازة (تُطرح أولاً)','Dettes et frais funéraires','Borçlar','قرضے','Hutang & biaya pemakaman')}</label>
       <input type="number" id="mDebts" placeholder="0" min="0" style="width:100%;padding:12px;border:1px solid var(--border-1);border-radius:var(--r-sm);background:var(--bg-sunk);color:var(--text-1);font-family:var(--font);font-size:15px">
     </div>
 
-    <div class="mirath-heirs-label">${t('mirath.heirs', lang)}</div>
+    <div class="mirath-heirs-label">${label('Select Heirs','حدد الورثة','Sélectionner les héritiers','Varisleri seçin','وارثین منتخب کریں','Pilih ahli waris')}</div>
     <div class="mirath-heirs-grid">
-      <label class="mirath-heir-check"><input type="checkbox" id="mHusband"> ${t('mirath.husband', lang)}</label>
-      <label class="mirath-heir-check"><input type="checkbox" id="mFather"> ${t('mirath.father', lang)}</label>
-      <label class="mirath-heir-check"><input type="checkbox" id="mMother"> ${t('mirath.mother', lang)}</label>
-
+      <label class="mirath-heir-check"><input type="checkbox" id="mHusband"> ${label('Husband','الزوج','Mari','Koca','شوہر','Suami')}</label>
+      <label class="mirath-heir-check"><input type="checkbox" id="mFather">  ${label('Father','الأب','Père','Baba','والد','Ayah')}</label>
+      <label class="mirath-heir-check"><input type="checkbox" id="mMother">  ${label('Mother','الأم','Mère','Anne','والدہ','Ibu')}</label>
       <label class="mirath-heir-num">
-        ${t('mirath.wife', lang)}
+        ${label('Wives','الزوجات','Épouses','Eşler','بیویاں','Istri')}
         <input type="number" id="mWives" min="0" max="4" value="0" style="width:70px;padding:8px;border:1px solid var(--border-1);border-radius:8px;background:var(--bg-sunk);color:var(--text-1);font-family:var(--font)">
       </label>
       <label class="mirath-heir-num">
-        ${t('mirath.sons', lang)}
+        ${label('Sons','الأبناء','Fils','Oğullar','بیٹے','Anak L.')}
         <input type="number" id="mSons" min="0" value="0" style="width:70px;padding:8px;border:1px solid var(--border-1);border-radius:8px;background:var(--bg-sunk);color:var(--text-1);font-family:var(--font)">
       </label>
       <label class="mirath-heir-num">
-        ${t('mirath.daughters', lang)}
+        ${label('Daughters','البنات','Filles','Kızlar','بیٹیاں','Anak P.')}
         <input type="number" id="mDaughters" min="0" value="0" style="width:70px;padding:8px;border:1px solid var(--border-1);border-radius:8px;background:var(--bg-sunk);color:var(--text-1);font-family:var(--font)">
       </label>
       <label class="mirath-heir-num">
-        ${lang === 'ar' ? 'الإخوة' : 'Brothers (for blocking)'}
+        ${label('Brothers (blocking)','الإخوة (للحجب)','Frères','Erkek kardeş','بھائی','Saudara L.')}
         <input type="number" id="mBrothers" min="0" value="0" style="width:70px;padding:8px;border:1px solid var(--border-1);border-radius:8px;background:var(--bg-sunk);color:var(--text-1);font-family:var(--font)">
       </label>
     </div>
-    <button class="zk-btn" onclick="window.mirathCalc()">${t('common.calculate', lang)}</button>
+    <button class="zk-btn" id="mirathCalcBtn">${label('Calculate','احسب','Calculer','Hesapla','حساب کریں','Hitung')}</button>
   </div>
 
   <div id="mirathResult" style="display:none;margin-top:20px"></div>
 
   <div class="mirath-quran rv rv-d2">
-    <div class="mirath-quran-title"><i class="ri-book-open-line"></i> ${lang === 'ar' ? 'الآيات الكريمة' : 'Quranic Basis'}</div>
+    <div class="mirath-quran-title"><i class="ri-book-open-line"></i> ${label('Quranic Basis','الأساس القرآني','Base coranique','Kuran Referansı','قرآنی بنیاد','Dasar Quran')}</div>
     <div class="mirath-quran-ar">يُوصِيكُمُ اللَّهُ فِي أَوْلَادِكُمْ ۖ لِلذَّكَرِ مِثْلُ حَظِّ الْأُنثَيَيْنِ</div>
     <div class="mirath-quran-ref">An-Nisa 4:11</div>
     <div class="mirath-quran-en">Allah instructs you concerning your children: for the male, what is equal to the share of two females.</div>
   </div>
 
 </div>
-<footer class="ft"><i class="ri-heart-fill"></i> ${t('common.ummah', lang)}</footer>`;
+<footer class="ft"><i class="ri-heart-fill"></i> ${isAr?'صُنع للأمة':'Built for the Ummah'}</footer>`;
   },
 
   init(lang) {
-    _lang = lang;
-    window.mirathCalc = () => doCalculate(lang);
-  },
+    const isAr = lang==='ar';
 
-  destroy() {
-    delete window.mirathCalc;
+    document.getElementById('mirathCalcBtn')?.addEventListener('click', () => {
+      const v = id => parseFloat(document.getElementById(id)?.value)||0;
+      const b = id => document.getElementById(id)?.checked||false;
+
+      const heirs = {
+        husband:   b('mHusband')?1:0,
+        wives:     v('mWives'),
+        sons:      v('mSons'),
+        daughters: v('mDaughters'),
+        father:    b('mFather')?1:0,
+        mother:    b('mMother')?1:0,
+        brothers:  v('mBrothers'),
+      };
+
+      const results = calcMirath({ estate:v('mEstate'), debts:v('mDebts'), heirs });
+      const cur = document.getElementById('mCurrency')?.value||'$';
+      const net = Math.max(0, v('mEstate') - v('mDebts'));
+
+      const resEl = document.getElementById('mirathResult');
+      if (!resEl) return;
+
+      if (results.length===0) {
+        resEl.style.display='block';
+        resEl.innerHTML=`<div class="mirath-quran" style="text-align:center;padding:20px;color:var(--text-3)">${isAr?'يرجى تحديد الورثة أولاً':'Please select at least one heir.'}</div>`;
+        return;
+      }
+
+      resEl.style.display='block';
+      resEl.innerHTML=`
+        <div class="mirath-net">
+          <div class="mirath-net-label">${isAr?'صافي التركة':'Net Estate'}</div>
+          <div class="mirath-net-val">${cur}${net.toLocaleString()}</div>
+          <div class="mirath-net-sub">${isAr?'بعد خصم الديون':'After deducting debts'}</div>
+        </div>
+        <div class="mirath-table-wrap">
+          <table class="mirath-table">
+            <thead>
+              <tr>
+                <th>${isAr?'الوارث':'Heir'}</th>
+                <th>${isAr?'النصيب':'Share'}</th>
+                <th>${isAr?'المبلغ':'Amount'}</th>
+                <th>${isAr?'المرجع':'Reference'}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${results.map(r=>`
+                <tr>
+                  <td><strong>${isAr?r.label_ar:r.label_en}</strong> ${r.note_en&&!isAr?`<br><small style="color:var(--text-3)">${r.note_en}</small>`:''}</td>
+                  <td><span class="mirath-frac">${r.fracStr}</span></td>
+                  <td><strong>${cur}${r.amount.toLocaleString(undefined,{maximumFractionDigits:2})}</strong></td>
+                  <td><small class="mirath-ref">${r.ref}</small></td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+        <div class="mirath-disclaimer">
+          <i class="ri-information-line"></i>
+          ${isAr?'هذه الحاسبة للمرجعية فقط. استشر عالماً مؤهلاً متخصصاً في علم المواريث. والله أعلم':'This calculator is for reference only. Consult a qualified Islamic scholar for a binding ruling. والله أعلم'}
+        </div>`;
+    });
   }
 };
 
