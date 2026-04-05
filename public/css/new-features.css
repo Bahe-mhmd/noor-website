@@ -881,3 +881,87 @@ body.modal-open { overflow: hidden !important; }
   .dhn-card { padding: 16px; }
   .qrn-taf-modal { width: 100% !important; max-height: 94vh !important; border-radius: var(--r-xl) var(--r-xl) 0 0 !important; }
 }
+
+/* ═══════════════════════════════════════════════════
+   TAFSIR OVERLAY — class-based open/close (v4 fix)
+   Uses .open class instead of display:flex
+   so it's ALWAYS centered in the viewport regardless of scroll
+   ═══════════════════════════════════════════════════ */
+
+/* Base state: hidden */
+.qrn-taf-overlay {
+  display: none;
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px;
+}
+/* Open state */
+.qrn-taf-overlay.open {
+  display: flex !important;
+}
+/* Prevent page scroll when modal is open */
+body.qr-modal-open {
+  overflow: hidden !important;
+}
+
+/* Modal sizing — override previous values */
+.qrn-taf-modal {
+  width: 96% !important;
+  max-width: 860px !important;
+  max-height: 88vh !important;
+  border-radius: var(--r-xl) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background: var(--bg-el) !important;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.4) !important;
+  overflow: hidden !important;
+  animation: tafIn .25s var(--ease) !important;
+}
+@keyframes tafIn {
+  from { opacity:0; transform:scale(0.95) translateY(12px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+
+/* Bigger tafsir text */
+.qrn-taf-text {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 24px 28px !important;
+  overscroll-behavior: contain;
+}
+.qrn-taf-body {
+  font-size: 16px !important;
+  line-height: 2 !important;
+  color: var(--text-2) !important;
+}
+.qrn-taf-body[dir="rtl"] {
+  font-family: var(--font-arabic) !important;
+  font-size: 20px !important;
+  line-height: 2.3 !important;
+  text-align: right !important;
+}
+.qrn-taf-verse {
+  font-size: 24px !important;
+  line-height: 2.2 !important;
+  padding: 20px 28px !important;
+}
+
+@media (max-width: 640px) {
+  .qrn-taf-modal {
+    width: 100% !important;
+    max-height: 90vh !important;
+    border-radius: var(--r-xl) var(--r-xl) 0 0 !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+  .qrn-taf-overlay {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+}
