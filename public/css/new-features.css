@@ -699,3 +699,185 @@
   .qrn-taf-overlay { padding: 0; }
   .qrn-content { padding: 0 12px 60px; }
 }
+
+/* ═══════════════════════════════════════════════════
+   TAFSIR MODAL — Bigger + scroll-to-top fix
+   ═══════════════════════════════════════════════════ */
+
+/* Bigger modal — override previous values */
+.qrn-taf-modal {
+  max-width: 900px !important;
+  max-height: 92vh !important;
+  width: 96% !important;
+}
+.qrn-taf-body {
+  font-size: 17px !important;
+  line-height: 2.2 !important;
+}
+.qrn-taf-body[dir="rtl"] {
+  font-size: 19px !important;
+  font-family: var(--font-arabic) !important;
+}
+.qrn-taf-text {
+  padding: 24px 28px !important;
+}
+.qrn-taf-verse {
+  font-size: 24px !important;
+  line-height: 2.2 !important;
+  padding: 22px 28px !important;
+}
+/* Prevent body scroll when modal open — handled in JS */
+body.modal-open { overflow: hidden !important; }
+
+/* ═══════════════════════════════════════════════════
+   DHIKR PAGE — Complete redesign with accordion
+   ═══════════════════════════════════════════════════ */
+
+.dh-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.dh-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid var(--border-1);
+  border-radius: 24px;
+  background: var(--bg-el);
+  color: var(--text-2);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.dh-filter i { font-size: 15px; }
+.dh-filter:hover { border-color: var(--emerald-400); color: var(--emerald-700); background: var(--emerald-50); }
+.dh-filter.active { background: var(--emerald-600); color: white; border-color: var(--emerald-600); }
+[data-theme="dark"] .dh-filter:hover { background: rgba(5,150,105,0.1); }
+[data-theme="dark"] .dh-filter.active { background: var(--emerald-700); }
+
+.dh-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Dhikr Card ── */
+.dhn-card {
+  background: var(--bg-el);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-xl);
+  padding: 24px;
+  transition: box-shadow .3s;
+}
+.dhn-card:hover { box-shadow: var(--shadow-md); }
+
+.dhn-arabic {
+  font-family: var(--font-arabic);
+  font-size: 24px;
+  line-height: 2.2;
+  text-align: right;
+  direction: rtl;
+  color: var(--text-1);
+  padding: 16px 20px;
+  background: var(--emerald-50);
+  border-radius: var(--r-md);
+  margin-bottom: 14px;
+  border-right: 4px solid var(--emerald-500);
+}
+[data-theme="dark"] .dhn-arabic { background: rgba(5,150,105,0.06); }
+[dir="rtl"] .dhn-arabic { border-right: none; border-left: 4px solid var(--emerald-500); }
+
+.dhn-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.dhn-count, .dhn-src {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text-3);
+  font-weight: 500;
+}
+.dhn-count i { color: var(--emerald-500); }
+.dhn-src i   { color: var(--gold-500); }
+
+/* ── Accordion sections ── */
+.dhn-section {
+  border-top: 1px solid var(--border-1);
+}
+.dhn-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 12px 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-align: start;
+  transition: color .2s;
+}
+.dhn-toggle:hover { color: var(--emerald-700); }
+.dhn-toggle.open  { color: var(--emerald-700); }
+.dhn-toggle i:first-child { font-size: 16px; color: var(--emerald-600); }
+.dhn-chev {
+  margin-left: auto;
+  font-size: 18px;
+  transition: transform .25s var(--ease);
+  color: var(--text-3);
+}
+[dir="rtl"] .dhn-chev { margin-left: 0; margin-right: auto; }
+
+.dhn-body {
+  padding: 4px 4px 16px;
+  font-size: 14.5px;
+  color: var(--text-2);
+  line-height: 1.85;
+  animation: fadeIn .2s ease;
+}
+@keyframes fadeIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+
+.dhn-trans-text {
+  font-style: italic;
+  color: var(--emerald-700);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.dhn-virtue {
+  background: var(--gold-50);
+  border-radius: var(--r-md);
+  padding: 12px 16px !important;
+  color: var(--text-1);
+  border-left: 3px solid var(--gold-400);
+}
+[data-theme="dark"] .dhn-virtue { background: rgba(245,158,11,0.05); }
+[dir="rtl"] .dhn-virtue { border-left: none; border-right: 3px solid var(--gold-400); }
+
+.dhn-explanation {
+  background: var(--bg-sunk);
+  border-radius: var(--r-md);
+  padding: 14px 16px !important;
+  color: var(--text-2);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .dhn-arabic { font-size: 20px; padding: 12px 14px; }
+  .dh-filter span { display: none; }
+  .dhn-card { padding: 16px; }
+  .qrn-taf-modal { width: 100% !important; max-height: 94vh !important; border-radius: var(--r-xl) var(--r-xl) 0 0 !important; }
+}
