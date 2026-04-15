@@ -965,3 +965,30 @@ body.qr-modal-open {
     padding: 0 !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════
+   TAFSIR PORTAL MODAL ANIMATIONS (v6)
+   The modal is appended to document.body at runtime.
+   These keyframes animate the portal fade in/out.
+   ═══════════════════════════════════════════════════ */
+@keyframes qrTafFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes qrTafFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+/* Modal panel slides up on open */
+#noorTafsirPortal .qrn-taf-modal {
+  animation: qrTafSlideIn .25s var(--ease);
+}
+@keyframes qrTafSlideIn {
+  from { opacity: 0; transform: scale(0.95) translateY(16px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+/* Override any old overlay styles that might conflict */
+#noorTafsirPortal {
+  /* All styles are inline — this is just a safety fallback */
+  transform: none !important;
+}
