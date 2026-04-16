@@ -1,283 +1,302 @@
 // ═══════════════════════════════════════════════════
-// NOOR — videos.js  ·  Video Library Data
-//
-// HOW TO ADD A NEW VIDEO:
-// 1. Get the YouTube video ID from the URL
-//    e.g. youtube.com/watch?v=dQw4w9WgXcQ → ID is "dQw4w9WgXcQ"
-// 2. Add an entry to the VIDEOS array below
-// 3. Pick a category from CATEGORIES or add a new one
-// 4. Done — it will appear automatically in the grid
-//
-// FIELDS:
-//   id       (required) YouTube video ID only — NOT the full URL
-//   title    (required) Video title
-//   category (required) Must match a category id in CATEGORIES
-//   speaker  (optional) Sheikh/speaker name
-//   lang     (optional) 'ar' | 'en' | 'fr' etc.
-//   duration (optional) e.g. "45 min"
+// NOOR — pages/videos.js  ·  Islamic Video Library
+// Architecture: VideoGrid + VideoCard + VideoModal + CategoryFilter
 // ═══════════════════════════════════════════════════
+import { VIDEOS, CATEGORIES } from '../videos.js';
+import { t } from '../i18n.js';
 
-export const CATEGORIES = [
-  { id:'all',       label:{ en:'All',          ar:'الكل',          fr:'Tout',          tr:'Hepsi',        ur:'سب',            id:'Semua'        }, icon:'ri-apps-2-line'        },
-  { id:'tafsir',    label:{ en:'Tafsir',        ar:'التفسير',       fr:'Tafsir',        tr:'Tefsir',       ur:'تفسیر',          id:'Tafsir'       }, icon:'ri-book-open-line'     },
-  { id:'lectures',  label:{ en:'Lectures',      ar:'محاضرات',       fr:'Conférences',   tr:'Dersler',      ur:'لیکچرز',         id:'Ceramah'      }, icon:'ri-mic-line'           },
-  { id:'reminders', label:{ en:'Reminders',     ar:'مواعظ',         fr:'Rappels',       tr:'Nasihatler',   ur:'نصیحتیں',        id:'Nasihat'      }, icon:'ri-heart-line'         },
-  { id:'stories',   label:{ en:'Prophets & Stories', ar:'قصص الأنبياء', fr:'Histoires', tr:'Kıssalar',    ur:'انبیاء کی کہانیاں', id:'Kisah Nabi' }, icon:'ri-moon-line'          },
-  { id:'fiqh',      label:{ en:'Fiqh & Rulings',ar:'فقه وأحكام',   fr:'Fiqh',          tr:'Fıkıh',        ur:'فقہ',             id:'Fikih'        }, icon:'ri-scales-3-line'      },
-  { id:'aqeedah',   label:{ en:'Aqeedah',       ar:'العقيدة',       fr:'Aqida',         tr:'Akide',        ur:'عقیدہ',          id:'Akidah'       }, icon:'ri-star-line'          },
-  { id:'quran',     label:{ en:'Quran Recitation',ar:'تلاوة القرآن', fr:'Récitation',   tr:'Kuran Tilaveti',ur:'تلاوت',         id:'Tilawah'      }, icon:'ri-book-line'          },
-  { id:'seerah',    label:{ en:'Seerah',         ar:'السيرة النبوية',fr:'Seerah',        tr:'Siyer',        ur:'سیرت',           id:'Sirah'        }, icon:'ri-user-star-line'     },
-  { id:'arabic',    label:{ en:'Arabic Learning', ar:'تعلم العربية', fr:'Langue Arabe', tr:'Arapça',       ur:'عربی سیکھیں',    id:'Belajar Arab' }, icon:'ri-font-size'          },
-];
+let _lang        = 'en';
+let _activeCat   = 'all';
+let _searchQuery = '';
+let _modalEl     = null;   // body-level portal (same fix as tafsir)
+let _currentVideo = null;
+const LAST_WATCHED_KEY = 'noor_last_video';
 
-export const VIDEOS = [
-  // ── TAFSIR ──
-  {
-    id: 'XGuKPSGFMnY',
-    title: 'Tafsir Surah Al-Fatiha — The Opening',
-    category: 'tafsir',
-    speaker: 'Nouman Ali Khan',
-    lang: 'en',
-    duration: '40 min'
-  },
-  {
-    id: 'uMDuOxTKOXk',
-    title: 'Surah Al-Baqarah — Introduction & Overview',
-    category: 'tafsir',
-    speaker: 'Nouman Ali Khan',
-    lang: 'en',
-    duration: '55 min'
-  },
-  {
-    id: 'XGuKPSGFMnY',
-    title: 'تفسير سورة الكهف — المقدمة',
-    category: 'tafsir',
-    speaker: 'الشيخ عثمان الخميس',
-    lang: 'ar',
-    duration: '45 min'
-  },
-  {
-    id: 'TiAQpR5AGFg',
-    title: 'Surah Al-Kahf — Lessons & Themes',
-    category: 'tafsir',
-    speaker: 'Nouman Ali Khan',
-    lang: 'en',
-    duration: '50 min'
-  },
-  {
-    id: 'wKGjdNkMxRQ',
-    title: 'Tafsir Surah Yasin — Heart of the Quran',
-    category: 'tafsir',
-    speaker: 'Mufti Menk',
-    lang: 'en',
-    duration: '35 min'
-  },
+// ── Helpers ──
+function thumb(id) {
+  return 'https://img.youtube.com/vi/' + id + '/hqdefault.jpg';
+}
+function embedUrl(id) {
+  return 'https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1';
+}
+function saveLastWatched(video) {
+  try { localStorage.setItem(LAST_WATCHED_KEY, JSON.stringify({ id: video.id, title: video.title, ts: Date.now() })); } catch(e) {}
+}
+function getLastWatched() {
+  try { return JSON.parse(localStorage.getItem(LAST_WATCHED_KEY) || 'null'); } catch(e) { return null; }
+}
 
-  // ── LECTURES ──
-  {
-    id: 'OmrSPmGrGME',
-    title: 'Why Islam? — A Compelling Explanation',
-    category: 'lectures',
-    speaker: 'Hamza Tzortzis',
-    lang: 'en',
-    duration: '60 min'
-  },
-  {
-    id: 'dDwdCRq-8i4',
-    title: 'The Purpose of Life in Islam',
-    category: 'lectures',
-    speaker: 'Jeffrey Lang',
-    lang: 'en',
-    duration: '48 min'
-  },
-  {
-    id: 'Ot-4J2hJNcE',
-    title: 'Islam and Science — Are They Compatible?',
-    category: 'lectures',
-    speaker: 'Dr. Zakir Naik',
-    lang: 'en',
-    duration: '75 min'
-  },
-  {
-    id: 'wKGjdNkMxRQ',
-    title: 'The Six Pillars of Iman Explained',
-    category: 'lectures',
-    speaker: 'Mufti Menk',
-    lang: 'en',
-    duration: '42 min'
-  },
+// ── Filter + search ──
+function filteredVideos() {
+  const q = _searchQuery.toLowerCase().trim();
+  return VIDEOS.filter(v => {
+    const catOk = _activeCat === 'all' || v.category === _activeCat;
+    if (!catOk) return false;
+    if (!q) return true;
+    return v.title.toLowerCase().includes(q) ||
+      (v.speaker || '').toLowerCase().includes(q) ||
+      v.category.toLowerCase().includes(q);
+  });
+}
 
-  // ── REMINDERS ──
-  {
-    id: 'OmrSPmGrGME',
-    title: 'Gratitude — The Key to Abundance',
-    category: 'reminders',
-    speaker: 'Mufti Menk',
-    lang: 'en',
-    duration: '18 min'
-  },
-  {
-    id: 'TiAQpR5AGFg',
-    title: 'Tawakkul — Trusting Allah Completely',
-    category: 'reminders',
-    speaker: 'Omar Suleiman',
-    lang: 'en',
-    duration: '22 min'
-  },
-  {
-    id: 'dDwdCRq-8i4',
-    title: 'Death — The Greatest Reminder',
-    category: 'reminders',
-    speaker: 'Bilal Philips',
-    lang: 'en',
-    duration: '30 min'
-  },
-  {
-    id: 'Ot-4J2hJNcE',
-    title: 'Dealing with Anxiety Through Islam',
-    category: 'reminders',
-    speaker: 'Omar Suleiman',
-    lang: 'en',
-    duration: '25 min'
-  },
+// ── VideoCard HTML ──
+function VideoCard(v, idx) {
+  const cat = CATEGORIES.find(c => c.id === v.category);
+  const catLabel = cat ? (cat.label[_lang] || cat.label.en) : v.category;
+  return '<div class="vid-card" data-idx="' + idx + '" data-id="' + v.id + '">'
+    + '<div class="vid-thumb-wrap">'
+    + '<img class="vid-thumb" src="' + thumb(v.id) + '" alt="' + escHtml(v.title) + '" loading="lazy">'
+    + '<div class="vid-play-btn"><i class="ri-play-fill"></i></div>'
+    + '<div class="vid-duration">' + (v.duration || '') + '</div>'
+    + '</div>'
+    + '<div class="vid-info">'
+    + '<div class="vid-cat-badge"><i class="' + (cat?.icon || 'ri-video-line') + '"></i> ' + catLabel + '</div>'
+    + '<div class="vid-title">' + escHtml(v.title) + '</div>'
+    + (v.speaker ? '<div class="vid-speaker"><i class="ri-user-voice-line"></i> ' + escHtml(v.speaker) + '</div>' : '')
+    + '</div>'
+    + '</div>';
+}
 
-  // ── PROPHETS & STORIES ──
-  {
-    id: 'XGuKPSGFMnY',
-    title: 'The Story of Prophet Ibrahim ﷺ',
-    category: 'stories',
-    speaker: 'Yasir Qadhi',
-    lang: 'en',
-    duration: '65 min'
-  },
-  {
-    id: 'uMDuOxTKOXk',
-    title: 'Prophet Yusuf ﷺ — Lessons from Quran',
-    category: 'stories',
-    speaker: 'Nouman Ali Khan',
-    lang: 'en',
-    duration: '80 min'
-  },
-  {
-    id: 'wKGjdNkMxRQ',
-    title: 'The Life of Prophet Musa ﷺ',
-    category: 'stories',
-    speaker: 'Omar Suleiman',
-    lang: 'en',
-    duration: '55 min'
-  },
+function escHtml(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
-  // ── FIQH ──
-  {
-    id: 'TiAQpR5AGFg',
-    title: 'How to Perform Salah Correctly — Step by Step',
-    category: 'fiqh',
-    speaker: 'Bilal Philips',
-    lang: 'en',
-    duration: '35 min'
-  },
-  {
-    id: 'OmrSPmGrGME',
-    title: 'Zakat — Who Must Pay and How to Calculate',
-    category: 'fiqh',
-    speaker: 'Mufti Menk',
-    lang: 'en',
-    duration: '28 min'
-  },
-  {
-    id: 'Ot-4J2hJNcE',
-    title: 'Halal and Haram in Food — A Complete Guide',
-    category: 'fiqh',
-    speaker: 'Dr. Zakir Naik',
-    lang: 'en',
-    duration: '40 min'
-  },
+// ── CategoryFilter HTML ──
+function CategoryFilter() {
+  return CATEGORIES.map(c =>
+    '<button class="vid-cat-btn' + (c.id === _activeCat ? ' active' : '') + '" data-cat="' + c.id + '">'
+    + '<i class="' + c.icon + '"></i>'
+    + '<span>' + (c.label[_lang] || c.label.en) + '</span>'
+    + '</button>'
+  ).join('');
+}
 
-  // ── AQEEDAH ──
-  {
-    id: 'dDwdCRq-8i4',
-    title: 'The 99 Names of Allah — Al-Asma ul-Husna',
-    category: 'aqeedah',
-    speaker: 'Yasir Qadhi',
-    lang: 'en',
-    duration: '90 min'
-  },
-  {
-    id: 'XGuKPSGFMnY',
-    title: 'Tawhid — The Foundation of Islam',
-    category: 'aqeedah',
-    speaker: 'Bilal Philips',
-    lang: 'en',
-    duration: '45 min'
-  },
-  {
-    id: 'wKGjdNkMxRQ',
-    title: 'Signs of the Day of Judgement',
-    category: 'aqeedah',
-    speaker: 'Omar Suleiman',
-    lang: 'en',
-    duration: '52 min'
-  },
+// ── VideoGrid render ──
+function renderGrid() {
+  const container = document.getElementById('vidGrid');
+  const count = document.getElementById('vidCount');
+  if (!container) return;
 
-  // ── QURAN RECITATION ──
-  {
-    id: 'uMDuOxTKOXk',
-    title: 'Surah Al-Mulk — Mishary Rashid Al-Afasy',
-    category: 'quran',
-    speaker: 'Mishary Rashid Al-Afasy',
-    lang: 'ar',
-    duration: '10 min'
-  },
-  {
-    id: 'TiAQpR5AGFg',
-    title: 'Surah Al-Rahman — Abdul Rahman Al-Sudais',
-    category: 'quran',
-    speaker: 'Abdul Rahman Al-Sudais',
-    lang: 'ar',
-    duration: '12 min'
-  },
-  {
-    id: 'OmrSPmGrGME',
-    title: 'Surah Al-Kahf — Maher Al-Muaiqly',
-    category: 'quran',
-    speaker: 'Maher Al-Muaiqly',
-    lang: 'ar',
-    duration: '25 min'
-  },
+  const list = filteredVideos();
+  if (count) count.textContent = list.length + ' ' + (list.length === 1 ? 'video' : 'videos');
 
-  // ── SEERAH ──
-  {
-    id: 'Ot-4J2hJNcE',
-    title: 'The Sealed Nectar — Life of Prophet Muhammad ﷺ',
-    category: 'seerah',
-    speaker: 'Yasir Qadhi',
-    lang: 'en',
-    duration: '70 min'
-  },
-  {
-    id: 'dDwdCRq-8i4',
-    title: 'The Hijra — Migration to Madinah',
-    category: 'seerah',
-    speaker: 'Omar Suleiman',
-    lang: 'en',
-    duration: '45 min'
+  if (!list.length) {
+    container.innerHTML = '<div class="vid-empty">'
+      + '<i class="ri-video-off-line"></i>'
+      + '<p>' + (_lang === 'ar' ? 'لا توجد مقاطع فيديو مطابقة' : 'No videos found') + '</p>'
+      + '</div>';
+    return;
+  }
+
+  container.innerHTML = list.map((v, i) => VideoCard(v, i)).join('');
+
+  // Wire click handlers
+  container.querySelectorAll('.vid-card').forEach((card, i) => {
+    card.addEventListener('click', () => openModal(list[i]));
+  });
+}
+
+// ── VideoModal (body portal — same technique as tafsir fix) ──
+function openModal(video) {
+  _currentVideo = video;
+  saveLastWatched(video);
+
+  // Remove any existing modal
+  closeModal();
+
+  const cat = CATEGORIES.find(c => c.id === video.category);
+  const catLabel = cat ? (cat.label[_lang] || cat.label.en) : video.category;
+
+  // Build related videos (same category, excluding current)
+  const related = VIDEOS.filter(v => v.category === video.category && v.id !== video.id).slice(0, 4);
+
+  const div = document.createElement('div');
+  div.id = 'noorVideoPortal';
+  div.style.cssText = [
+    'position:fixed', 'inset:0', 'width:100vw', 'height:100vh',
+    'background:rgba(0,0,0,0.88)', 'z-index:2147483647',
+    'display:flex', 'align-items:center', 'justify-content:center',
+    'padding:16px', 'box-sizing:border-box', 'overflow-y:auto',
+    'animation:vidFadeIn .2s ease'
+  ].join(';');
+
+  div.innerHTML = '<div class="vid-modal">'
+    // Header
+    + '<div class="vid-modal-head">'
+    + '<div class="vid-modal-meta">'
+    + '<span class="vid-modal-cat"><i class="' + (cat?.icon || 'ri-video-line') + '"></i> ' + catLabel + '</span>'
+    + (video.speaker ? '<span class="vid-modal-speaker"><i class="ri-user-voice-line"></i> ' + escHtml(video.speaker) + '</span>' : '')
+    + '</div>'
+    + '<button class="vid-modal-close" id="vidModalClose"><i class="ri-close-line"></i></button>'
+    + '</div>'
+    // Player
+    + '<div class="vid-player-wrap">'
+    + '<iframe class="vid-player" src="' + embedUrl(video.id) + '" title="' + escHtml(video.title) + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+    + '</div>'
+    // Title
+    + '<div class="vid-modal-title">' + escHtml(video.title) + '</div>'
+    // Related videos
+    + (related.length ? '<div class="vid-related">'
+      + '<div class="vid-related-label"><i class="ri-play-list-line"></i> '
+      + (_lang === 'ar' ? 'مقاطع ذات صلة' : 'Related Videos') + '</div>'
+      + '<div class="vid-related-grid">'
+      + related.map(rv => '<div class="vid-related-card" data-id="' + rv.id + '" data-vid=\'' + JSON.stringify(rv).replace(/'/g, '&#39;') + '\'>'
+        + '<img src="' + thumb(rv.id) + '" alt="' + escHtml(rv.title) + '" loading="lazy">'
+        + '<div class="vid-related-play"><i class="ri-play-fill"></i></div>'
+        + '<div class="vid-related-title">' + escHtml(rv.title) + '</div>'
+        + '</div>'
+      ).join('')
+      + '</div></div>' : '')
+    + '</div>'; // end vid-modal
+
+  document.body.appendChild(div);
+  document.body.style.overflow = 'hidden';
+  _modalEl = div;
+
+  // Wire close events
+  document.getElementById('vidModalClose')?.addEventListener('click', closeModal);
+  div.addEventListener('click', e => { if (e.target === div) closeModal(); });
+
+  // ESC key
+  window._vidEsc = e => { if (e.key === 'Escape') closeModal(); };
+  document.addEventListener('keydown', window._vidEsc);
+
+  // Related video clicks
+  div.querySelectorAll('.vid-related-card').forEach(card => {
+    card.addEventListener('click', () => {
+      try {
+        const v = JSON.parse(card.dataset.vid.replace(/&#39;/g, "'"));
+        openModal(v);
+      } catch(e) {}
+    });
+  });
+}
+
+function closeModal() {
+  if (_modalEl) {
+    _modalEl.style.animation = 'vidFadeOut .18s ease forwards';
+    setTimeout(() => { _modalEl?.remove(); _modalEl = null; }, 180);
+  }
+  document.body.style.overflow = '';
+  if (window._vidEsc) { document.removeEventListener('keydown', window._vidEsc); delete window._vidEsc; }
+  _currentVideo = null;
+}
+
+// ── Last Watched Banner ──
+function LastWatchedBanner() {
+  const lw = getLastWatched();
+  if (!lw) return '';
+  const v = VIDEOS.find(vid => vid.id === lw.id);
+  if (!v) return '';
+  const timeAgo = Math.floor((Date.now() - lw.ts) / 60000);
+  const timeStr = timeAgo < 60
+    ? timeAgo + ' min ago'
+    : Math.floor(timeAgo / 60) + ' hr ago';
+  return '<div class="vid-last-watched" id="vidLastWatched" data-vid=\'' + JSON.stringify(v).replace(/'/g, '&#39;') + '\'>'
+    + '<div class="vid-lw-left">'
+    + '<img src="' + thumb(v.id) + '" alt="' + escHtml(v.title) + '" loading="lazy">'
+    + '<div class="vid-lw-info">'
+    + '<div class="vid-lw-label"><i class="ri-history-line"></i> '
+    + (_lang === 'ar' ? 'استمر من حيث توقفت' : 'Continue watching') + ' · <span>' + timeStr + '</span></div>'
+    + '<div class="vid-lw-title">' + escHtml(v.title) + '</div>'
+    + (v.speaker ? '<div class="vid-lw-speaker">' + escHtml(v.speaker) + '</div>' : '')
+    + '</div></div>'
+    + '<button class="vid-lw-btn"><i class="ri-play-fill"></i> '
+    + (_lang === 'ar' ? 'استمر' : 'Resume') + '</button>'
+    + '</div>';
+}
+
+// ── Page Module ──
+const Videos = {
+  render(lang) {
+    _lang = lang;
+    const isAr = lang === 'ar';
+    const totalCount = VIDEOS.length;
+
+    return '<div class="pg-hd">'
+      + '<div class="pg-hd-ic"><i class="ri-play-circle-fill"></i></div>'
+      + '<h1>' + (isAr ? 'مكتبة الفيديو الإسلامية' : 'Islamic Video Library') + '</h1>'
+      + '<p>' + (isAr
+        ? 'محاضرات وتلاوات وتفسير ومواعظ من علماء موثوقين'
+        : 'Lectures, recitations, tafsir, and reminders from trusted scholars') + '</p>'
+      + '</div>'
+      + '<div class="pg-body">'
+
+      // Last watched banner
+      + LastWatchedBanner()
+
+      // Search bar
+      + '<div class="vid-search-wrap">'
+      + '<div class="vid-search-bar">'
+      + '<i class="ri-search-line"></i>'
+      + '<input type="text" id="vidSearch" placeholder="'
+      + (isAr ? 'ابحث عن فيديو، مجال، أو شيخ...' : 'Search videos, topics, or speakers...')
+      + '">'
+      + '<button class="vid-search-clear" id="vidSearchClear" style="display:none"><i class="ri-close-line"></i></button>'
+      + '</div>'
+      + '<div class="vid-total-count"><span id="vidCount">' + totalCount + ' videos</span></div>'
+      + '</div>'
+
+      // Category filter
+      + '<div class="vid-cats" id="vidCats">' + CategoryFilter() + '</div>'
+
+      // Video grid
+      + '<div class="vid-grid" id="vidGrid"></div>'
+
+      + '</div>'
+      + '<footer class="ft"><i class="ri-heart-fill"></i> '
+      + (isAr ? 'صُنع للأمة' : 'Built for the Ummah') + '</footer>';
   },
 
-  // ── ARABIC LEARNING ──
-  {
-    id: 'XGuKPSGFMnY',
-    title: 'Arabic for Beginners — Lesson 1',
-    category: 'arabic',
-    speaker: 'Nouman Ali Khan',
-    lang: 'en',
-    duration: '30 min'
+  init(lang) {
+    _lang = lang;
+    _activeCat = 'all';
+    _searchQuery = '';
+
+    // Render grid immediately
+    requestAnimationFrame(() => {
+      renderGrid();
+
+      // Last watched click
+      document.getElementById('vidLastWatched')?.addEventListener('click', function() {
+        try {
+          const v = JSON.parse(this.dataset.vid.replace(/&#39;/g, "'"));
+          openModal(v);
+        } catch(e) {}
+      });
+    });
+
+    // Category filter
+    document.getElementById('vidCats')?.addEventListener('click', e => {
+      const btn = e.target.closest('.vid-cat-btn');
+      if (!btn) return;
+      _activeCat = btn.dataset.cat;
+      document.querySelectorAll('.vid-cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === _activeCat));
+      renderGrid();
+    });
+
+    // Search
+    const searchInput = document.getElementById('vidSearch');
+    const clearBtn = document.getElementById('vidSearchClear');
+    let searchTimer;
+    searchInput?.addEventListener('input', e => {
+      _searchQuery = e.target.value;
+      clearBtn.style.display = _searchQuery ? 'flex' : 'none';
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(renderGrid, 200);
+    });
+    clearBtn?.addEventListener('click', () => {
+      if (searchInput) searchInput.value = '';
+      _searchQuery = '';
+      clearBtn.style.display = 'none';
+      renderGrid();
+    });
   },
-  {
-    id: 'uMDuOxTKOXk',
-    title: 'Understanding Quranic Arabic — Fundamentals',
-    category: 'arabic',
-    speaker: 'Nouman Ali Khan',
-    lang: 'en',
-    duration: '50 min'
-  },
-];
+
+  destroy() {
+    closeModal();
+    document.body.style.overflow = '';
+  }
+};
+
+export default Videos;
