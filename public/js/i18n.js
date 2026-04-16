@@ -41,6 +41,7 @@ const T = {
   'nav.duagen':       { en:'Dua Companion',     ar:'رفيق الدعاء',        fr:'Guide de Douâ',         tr:'Dua Rehberi',       ur:'دعا رہنما',          id:'Teman Doa'          },
   'nav.mirath':       { en:'Inheritance',       ar:'المواريث',           fr:'Héritage Islamique',    tr:'Miras Hesabı',      ur:'وراثت',               id:'Warisan Islam'      },
   'nav.sources':      { en:'Trusted Sources',   ar:'المصادر الموثوقة',   fr:'Sources Fiables',       tr:'Güvenilir Kaynaklar',ur:'قابل اعتماد ذرائع', id:'Sumber Terpercaya'  },
+  'nav.videos':     { en:'Video Library',    ar:'مكتبة الفيديو',    fr:'Vidéothèque',      tr:'Video Kütüphanesi',ur:'ویڈیو لائبریری',   id:'Perpustakaan Video' },
   'nav.about':        { en:'About Noor',        ar:'عن نور',             fr:'À propos de Noor',      tr:'Noor Hakkında',     ur:'نور کے بارے میں',    id:'Tentang Noor'       },
   'common.theme':     { en:'Theme',             ar:'المظهر',             fr:'Thème',                 tr:'Tema',              ur:'تھیم',                id:'Tema'               },
   'common.next_prayer':{ en:'Next Prayer',      ar:'الصلاة القادمة',     fr:'Prochaine Prière',      tr:'Sonraki Namaz',     ur:'اگلی نماز',          id:'Shalat Berikutnya'  },
