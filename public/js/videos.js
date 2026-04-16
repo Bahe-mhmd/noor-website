@@ -75,7 +75,7 @@ export const VIDEOS = [
 
   // ── LECTURES ──
   {
-    id: 'EP3Ss6Szn9o&list=PLx3Fh1kiMbrcDYytEoWVt7bHqyP2iNjnn',
+    id: 'EP3Ss6Szn9o',
     title: 'صحيح مسلم المجلس (01) السند / المقدمة إلى الحديث (92) / الشيخ د. عثمان الخميس',
     category: 'lectures',
     speaker: 'Dr. Othman Alkhamees',
