@@ -22,6 +22,7 @@ const PAGES = {
   'mirath':     ()=>import('./pages/mirath.js'),
   'sources':    ()=>import('./pages/sources.js'),
   'about':      ()=>import('./pages/about.js'),
+  'videos':     ()=>import('./pages/videos.js'),
 };
 
 // Sidebar nav items: [data-pg, i18n key]
@@ -31,7 +32,7 @@ const NAV_ITEMS = [
   ['calendar','nav.calendar'],['zakat','nav.zakat'],['tasbih','nav.tasbih'],
   ['names','nav.names'],['halal','nav.halal'],
   ['ramadan','nav.ramadan'],['daily','nav.daily'],['duagen','nav.duagen'],['mirath','nav.mirath'],
-  ['sources','nav.sources'],['about','nav.about'],
+  ['sources','nav.sources'],['about','nav.about'],['videos','nav.videos'],
 ];
 const SECTION_LBLS = [
   ['lbl-main','nav.main'],['lbl-tools','nav.tools'],
