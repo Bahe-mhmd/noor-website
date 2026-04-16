@@ -75,12 +75,12 @@ export const VIDEOS = [
 
   // ── LECTURES ──
   {
-    id: 'OmrSPmGrGME',
-    title: 'Why Islam? — A Compelling Explanation',
+    id: 'EP3Ss6Szn9o&list=PLx3Fh1kiMbrcDYytEoWVt7bHqyP2iNjnn',
+    title: 'صحيح مسلم المجلس (01) السند / المقدمة إلى الحديث (92) / الشيخ د. عثمان الخميس',
     category: 'lectures',
-    speaker: 'Hamza Tzortzis',
-    lang: 'en',
-    duration: '60 min'
+    speaker: 'Dr. Othman Alkhamees',
+    lang: 'Ar',
+    duration: '1h 37 min'
   },
   {
     id: 'dDwdCRq-8i4',
