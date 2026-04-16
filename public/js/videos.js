@@ -75,19 +75,21 @@ export const VIDEOS = [
 // speaker, category, and an ordered videos array.
 export const PLAYLISTS = [
   {
-    id: 'tafsir_baqarah',
-    title: 'Tafsir Surah Al-Baqarah — Full Series',
-    description: 'A complete verse-by-verse tafsir of the longest surah in the Quran.',
-    speaker: 'Nouman Ali Khan',
+    id: 'PLx3Fh1kiMbrcDYytEoWVt7bHqyP2iNjnn',
+    title: 'مجالس صحيح مسلم ( كاملة )',
+    description: 'by Dr. Othman Alkamees - الشيخ الدكتور عثمان الخميس',
+    speaker: 'Dr Othman Alkhamees',
     category: 'tafsir',
     // Thumbnail auto-generated from first video's ID
     videos: [
-      { id:'uMDuOxTKOXk', title:'Part 1 — Introduction & Overview',       duration:'55 min' },
-      { id:'XGuKPSGFMnY', title:'Part 2 — The Opening Verses',             duration:'48 min' },
-      { id:'TiAQpR5AGFg', title:'Part 3 — The Believers Described',        duration:'52 min' },
-      { id:'wKGjdNkMxRQ', title:'Part 4 — The Hypocrites',                 duration:'40 min' },
-      { id:'OmrSPmGrGME', title:'Part 5 — The Story of Adam ﷺ',           duration:'45 min' },
-      { id:'dDwdCRq-8i4', title:'Part 6 — Ayatul Kursi Explained',         duration:'60 min' },
+      { id:'EP3Ss6Szn9o', title:'صحيح مسلم المجلس (01) السند / المقدمة إلى الحديث (92) / الشيخ د. عثمان الخميس',       duration:'1h 37 min' },
+      { id:'TYHGfZXRImY', title:'صحيح مسلم المجلس (02) المقدمة إلى الحديث (30) في كتاب الإيمان / الشيخ د. عثمان الخميس',             duration:'1h 25 min' },
+      { id:'Z36JqmNjilM', title:'صحيح مسلم المجلس (03) كتاب الإيمان من الحديث (31) إلى الحديث (91) / الشيخ د. عثمان الخميس',        duration:'1h 30 min' },
+      { id:'uuxm6NZwTbw', title:'صحيح مسلم المجلس (04) كتاب الإيمان من الحديث (92) إلى الحديث (139) / الشيخ د. عثمان الخميس',                 duration:'1h 25 min' },
+      { id:'Tj4WALlxaJk', title:'صحيح مسلم المجلس (05) كتاب الإيمان من الحديث (140) إلى الحديث (171) / الشيخ د. عثمان الخميس',           duration:'1h 23 min' },
+      { id:'meLLExZb3Ps', title:'صحيح مسلم المجلس (06) كتاب الإيمان من الحديث (172) إلى الحديث (201) / الشيخ د. عثمان الخميس',         duration:'1h 29 min' },
+      { id:'pjH8LDZr0qQ', title:'صحيح مسلم المجلس (07) كتاب الإيمان من الحديث (202) إلى الحديث (261) / الشيخ د. عثمان الخميس',                 duration:'1h 29 min' },
+      { id:'6tnT-K3zexs', title:'صحيح مسلم المجلس (08) كتاب الطهارة من الحديث (203) إلى الحديث (315) / الشيخ د. عثمان الخميس',           duration:'1h 33 min' },
     ]
   },
   {
