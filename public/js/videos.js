@@ -83,30 +83,61 @@ export const VIDEOS = [
     duration: '1h 37 min'
   },
   {
-    id: 'dDwdCRq-8i4',
-    title: 'The Purpose of Life in Islam',
+    id: 'TYHGfZXRImY',
+    title: 'صحيح مسلم المجلس (02) المقدمة إلى الحديث (30) في كتاب الإيمان / الشيخ د. عثمان الخميس',
     category: 'lectures',
-    speaker: 'Jeffrey Lang',
-    lang: 'en',
-    duration: '48 min'
+    speaker: 'Dr. Othman Alkhamees',
+    lang: 'Ar',
+    duration: '1h 25 min'
   },
   {
-    id: 'Ot-4J2hJNcE',
-    title: 'Islam and Science — Are They Compatible?',
+    id: 'Z36JqmNjilM',
+    title: 'صحيح مسلم المجلس (03) كتاب الإيمان من الحديث (31) إلى الحديث (91) / الشيخ د. عثمان الخميس',
     category: 'lectures',
-    speaker: 'Dr. Zakir Naik',
-    lang: 'en',
-    duration: '75 min'
+    speaker: 'Dr. Othman Alkhamees',
+    lang: 'Ar',
+    duration: '1h 30 min'
   },
   {
-    id: 'wKGjdNkMxRQ',
-    title: 'The Six Pillars of Iman Explained',
+    id: 'uuxm6NZwTbw',
+    title: 'صحيح مسلم المجلس (04) كتاب الإيمان من الحديث (92) إلى الحديث (139) / الشيخ د. عثمان الخميس',
     category: 'lectures',
-    speaker: 'Mufti Menk',
-    lang: 'en',
-    duration: '42 min'
+    speaker: 'Dr. Othman Alkhamees',
+    lang: 'Ar',
+    duration: '1h 25 min'
   },
-
+{
+    id: 'Tj4WALlxaJk',
+    title: 'صحيح مسلم المجلس (05) كتاب الإيمان من الحديث (140) إلى الحديث (171) / الشيخ د. عثمان الخميس',
+    category: 'lectures',
+    speaker: 'Dr. Othman Alkhamees',
+    lang: 'Ar',
+    duration: '1h 23 min'
+  },
+  {
+    id: 'meLLExZb3Ps',
+    title: 'صحيح مسلم المجلس (06) كتاب الإيمان من الحديث (172) إلى الحديث (201) / الشيخ د. عثمان الخميس',
+    category: 'lectures',
+    speaker: 'Dr. Othman Alkhamees',
+    lang: 'Ar',
+    duration: '1h 29 min'
+  },
+  {
+    id: 'pjH8LDZr0qQ',
+    title: 'صحيح مسلم المجلس (07) كتاب الإيمان من الحديث (202) إلى الحديث (261) / الشيخ د. عثمان الخميس',
+    category: 'lectures',
+    speaker: 'Dr. Othman Alkhamees',
+    lang: 'Ar',
+    duration: '1h 29 min'
+  },
+  {
+    id: '6tnT-K3zexs',
+    title: 'صحيح مسلم المجلس (08) كتاب الطهارة من الحديث (203) إلى الحديث (315) / الشيخ د. عثمان الخميس',
+    category: 'lectures',
+    speaker: 'Dr. Othman Alkhamees',
+    lang: 'Ar',
+    duration: '1h 33 min'
+  },
   // ── REMINDERS ──
   {
     id: 'OmrSPmGrGME',
