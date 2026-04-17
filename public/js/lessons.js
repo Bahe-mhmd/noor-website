@@ -214,7 +214,7 @@ export const LESSONS = [
     title: 'Arabic from the Beginning — Beginner Series',
     description: 'I am appealing to you today to please click on the link below to my charity appeal and make a donation to help me complete the project of building an educational Resources Centre and a public library in my hometown Ogbomosho south western Nigeria, This is an eighteen-lesson course for absolute beginners wishing to learn Arabic, The course as a whole is based on the book ARABIC FROM THE BEGINNING by Dr. Imran Hamza.',
     speaker: 'Imran Alawiye',
-    category: 'Learn Arabic',
+    category: 'arabic',
     videos: [
   { id:'Qwdyx9kAPlU', title:'Lesson 1 Arabic from the Beginning', category:'arabic', speaker:'Imran Alawiye', lang:'en', duration:'28 min' },
   { id:'A25GzzfmSvo', title:'Lesson 2 Arabic from the Beginning', category:'arabic', speaker:'Imran Alawiye', lang:'en', duration:'26 min' },
