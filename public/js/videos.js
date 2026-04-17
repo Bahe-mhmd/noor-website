@@ -607,7 +607,6 @@ export const PLAYLISTS = [
   { id:'xVNbv7OTqh4', title:'56- باب: الفهم في العلم. - صحيح البخاري - عثمان الخميس', category:'lectures', speaker:'Dr. Othman Alkhamees', lang:'ar', duration:'37 sec' },
   { id:'rCHSILEDkEA', title:'55- باب: من يرد الله به خيرا يفقهه في الدين. - صحيح البخاري - عثمان الخميس', category:'lectures', speaker:'Dr. Othman Alkhamees', lang:'ar', duration:'31 sec' },
   { id:'bn6rKmQWN98', title:'54- باب: من جعل لأهل العلم أياما معلومة. - صحيح البخاري - عثمان الخميس', category:'lectures', speaker:'Dr. Othman Alkhamees', lang:'ar', duration:'32 sec' },
-
     ]
   },
   {
