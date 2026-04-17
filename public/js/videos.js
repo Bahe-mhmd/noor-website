@@ -79,7 +79,7 @@ export const PLAYLISTS = [
     title: 'مجالس صحيح مسلم ( كاملة )',
     description: 'by Dr. Othman Alkamees - الشيخ الدكتور عثمان الخميس',
     speaker: 'Dr Othman Alkhamees',
-    category: 'tafsir',
+    category: 'Sahih-Muslim | صحيح مسلم',
     // Thumbnail auto-generated from first video's ID
     videos: [
       { id:'EP3Ss6Szn9o', title:'صحيح مسلم المجلس (01) السند / المقدمة إلى الحديث (92) / الشيخ د. عثمان الخميس',       duration:'1h 37 min' },
@@ -105,7 +105,7 @@ export const PLAYLISTS = [
     title: 'صحيح البخاري (حسب الأبواب) - عثمان الخميسﷺ',
     description: 'by Dr. Othman Alkamees - الشيخ الدكتور عثمان الخميس',
     speaker: 'Dr Othman Alkhamees',
-    category: 'tafsir',
+    category: 'Sahih-Al-Boukhari | صحيح البخاري',
     videos: [
  { id:'BvEMnrGnoRg', title:'553- باب سرعة انصراف النساء من الصبح، وقلة مقامهن في المسجد - كتاب الأذان - صحيح البخاري', category:'lectures', speaker:'Dr. Othman Alkhamees', lang:'ar', duration:'23 sec' },
   { id:'dL-qkuvV34w', title:'552- باب صلاة النساء خلف الرجال - كتاب الأذان - صحيح البخاري - عثمان الخميس', category:'lectures', speaker:'Dr. Othman Alkhamees', lang:'ar', duration:'36 sec' },
